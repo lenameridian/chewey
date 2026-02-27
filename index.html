@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="My Assistant">
+<title>My Personal Assistant</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f0f13; --surface: #1a1a24; --surface2: #22222f;
+    --accent: #7c6aff; --accent2: #a78bfa; --text: #e8e8f0;
+    --text2: #9090a8; --danger: #ff6b6b; --success: #4ade80;
+    --google: #4285f4; --radius: 14px;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+  header { background: var(--surface); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff10; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-size: 1.05rem; font-weight: 700; color: var(--accent2); }
+  .badges { display: flex; gap: 8px; align-items: center; }
+  .badge { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #444; flex-shrink: 0; }
+  .dot.on { background: var(--success); box-shadow: 0 0 5px var(--success); }
+  .dot.google { background: var(--google); box-shadow: 0 0 5px var(--google); }
+  nav { background: var(--surface); display: flex; border-bottom: 1px solid #ffffff10; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav button { flex: 1; min-width: 68px; padding: 11px 4px; background: none; border: none; color: var(--text2); font-size: 0.73rem; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  nav button.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+  .panel { display: none; flex: 1; flex-direction: column; padding: 14px; gap: 11px; overflow-y: auto; }
+  .panel.active { display: flex; }
+  .card { background: var(--surface); border-radius: var(--radius); padding: 15px 17px; border: 1px solid #ffffff08; }
+  .card.accent { border-color: var(--accent)50; }
+  .card.google-card { border-color: var(--google)50; }
+  .card h2 { font-size: 0.95rem; margin-bottom: 7px; color: var(--accent2); }
+  .card p, .card li { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+  .card ol { margin-left: 16px; }
+  .card code { background: var(--surface2); padding: 1px 6px; border-radius: 5px; font-size: 0.8rem; color: var(--accent2); font-family: monospace; }
+  input[type=text], input[type=password], textarea, select {
+    width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid #ffffff12;
+    border-radius: 10px; color: var(--text); font-size: 0.86rem; outline: none; transition: border 0.2s; font-family: inherit;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; }
+  .btn { padding: 10px 15px; border-radius: 10px; border: none; cursor: pointer; font-size: 0.86rem; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-google { background: var(--google); color: #fff; display: flex; align-items: center; gap: 7px; }
+  .btn-google:hover { opacity: 0.88; }
+  .btn-sm { padding: 7px 12px; font-size: 0.79rem; }
+  .btn-danger { background: var(--danger)18; color: var(--danger); border: 1px solid var(--danger)35; }
+  .btn-ghost { background: var(--surface2); color: var(--text2); }
+  .btn-success { background: var(--success)18; color: var(--success); border: 1px solid var(--success)35; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  label { font-size: 0.75rem; color: var(--text2); margin-bottom: 3px; display: block; }
+  .slabel { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text2); padding: 2px 0; }
+  .empty { text-align: center; color: var(--text2); font-size: 0.86rem; padding: 26px 16px; line-height: 1.6; }
+
+  /* Chat */
+  .chat-messages { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 180px; padding-bottom: 4px; }
+  .msg { max-width: 88%; padding: 11px 14px; border-radius: 16px; font-size: 0.86rem; line-height: 1.55; }
+  .msg.user { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.ai { background: var(--surface); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; white-space: pre-wrap; }
+  .msg.thinking { color: var(--text2); font-style: italic; }
+  .chat-bottom { display: flex; flex-direction: column; gap: 7px; }
+  .chat-input-row { display: flex; gap: 7px; }
+  .chat-input-row input { flex: 1; }
+  .ref-bar { background: var(--surface2); border-radius: 9px; padding: 7px 12px; font-size: 0.77rem; color: var(--text2); border: 1px solid #ffffff10; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .ref-bar span { color: var(--accent2); font-weight: 600; }
+
+  /* Drive docs */
+  .doc-card { background: var(--surface); border-radius: var(--radius); padding: 13px 15px; border: 1px solid #ffffff08; display: flex; align-items: center; gap: 12px; }
+  .doc-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-name { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .doc-meta { font-size: 0.73rem; color: var(--text2); margin-top: 3px; }
+  .doc-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .syncing { animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Tasks */
+  .task-card { background: var(--surface); border-radius: var(--radius); padding: 11px 13px; display: flex; align-items: flex-start; gap: 9px; border: 1px solid #ffffff08; }
+  .task-card.done { opacity: 0.42; }
+  .task-card input[type=checkbox] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .task-info { flex: 1; }
+  .task-title { font-size: 0.86rem; font-weight: 500; }
+  .task-card.done .task-title { text-decoration: line-through; }
+  .task-meta { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+
+  /* Menu */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  @media(min-width:560px) { .menu-grid { grid-template-columns: repeat(4,1fr); } }
+  .day-card { background: var(--surface); border-radius: var(--radius); padding: 11px; border: 1px solid #ffffff08; }
+  .day-card h3 { font-size: 0.73rem; color: var(--accent2); margin-bottom: 4px; }
+  .day-card p { font-size: 0.78rem; color: var(--text2); }
+
+  /* Files */
+  .file-card { background: var(--surface); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; gap: 11px; border: 1px solid #ffffff08; }
+  .file-icon { font-size: 1.3rem; }
+  .file-info { flex: 1; }
+  .file-name { font-size: 0.86rem; font-weight: 500; }
+  .file-meta { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+
+  /* Drive picker modal */
+  .modal-overlay { position: fixed; inset: 0; background: #00000088; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .modal { background: var(--surface); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: 80vh; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--google)40; }
+  .modal h2 { font-size: 0.95rem; color: var(--accent2); }
+  .modal-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .picker-item { background: var(--surface2); border-radius: 10px; padding: 11px 13px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 1px solid transparent; transition: border 0.15s; }
+  .picker-item:hover { border-color: var(--google); }
+  .picker-item.selected { border-color: var(--google); background: var(--google)15; }
+  .picker-name { font-size: 0.86rem; font-weight: 500; flex: 1; }
+  .picker-meta { font-size: 0.72rem; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✨ My Assistant</h1>
+  <div class="badges">
+    <div class="badge"><div class="dot" id="geminiDot"></div><span id="geminiLabel">Gemini</span></div>
+    <div class="badge"><div class="dot" id="googleDot"></div><span id="googleLabel">Drive</span></div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="switchTab('chat',this)">💬 Chat</button>
+  <button onclick="switchTab('drive',this)">☁️ Drive</button>
+  <button onclick="switchTab('tasks',this)">✅ Tasks</button>
+  <button onclick="switchTab('menu',this)">🍽️ Menu</button>
+  <button onclick="switchTab('files',this)">📁 Files</button>
+  <button onclick="switchTab('settings',this)">⚙️ Settings</button>
+</nav>
+
+<!-- CHAT -->
+<div class="panel active" id="panel-chat">
+  <div id="noKeyWarn" class="card accent" style="display:none">
+    <h2>🔑 Setup Required</h2>
+    <p>Go to <b>Settings</b> and add your Gemini API key. Then connect Google Drive in the <b>Drive</b> tab.</p>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg ai">Hi! I'm your assistant. Once you connect Google Drive, I can read and reference your live documents. What can I help you with?</div>
+  </div>
+  <div class="chat-bottom">
+    <div id="refBar" class="ref-bar" style="display:none">
+      <div>📄 Referencing: <span id="refBarName"></span></div>
+      <button class="btn btn-ghost btn-sm" onclick="clearRef()" style="padding:4px 9px;font-size:0.72rem">✕</button>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center">
+      <label style="margin:0;white-space:nowrap;font-size:0.77rem">📄 Doc:</label>
+      <select id="docSelector" style="flex:1;padding:8px 10px;font-size:0.79rem" onchange="onDocSelect()">
+        <option value="">— None —</option>
+      </select>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-primary" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRIVE -->
+<div class="panel" id="panel-drive">
+  <div class="card google-card">
+    <h2>☁️ Google Drive Connection</h2>
+    <p>Sign in with Google to let your assistant read your Docs. It only gets read-only access.</p>
+    <br>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-google btn-sm" id="signInBtn" onclick="googleSignIn()">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        Sign in with Google
+      </button>
+      <button class="btn btn-danger btn-sm" id="signOutBtn" onclick="googleSignOut()" style="display:none">Sign Out</button>
+    </div>
+  </div>
+
+  <div id="driveSection" style="display:none;display:flex;flex-direction:column;gap:11px">
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div>
+        <div class="slabel">Pinned Documents</div>
+        <div style="font-size:0.8rem;color:var(--text2);margin-top:3px">These docs are available in the Chat dropdown.</div>
+      </div>
+      <button class="btn btn-google btn-sm" onclick="openPicker()">+ Browse Drive</button>
+    </div>
+    <div id="pinnedDocs"></div>
+  </div>
+
+  <div id="driveSignedOut" class="empty">
+    Sign in with Google above to browse and pin your documents.
+  </div>
+</div>
+
+<!-- TASKS -->
+<div class="panel" id="panel-tasks">
+  <div class="card">
+    <div class="slabel" style="margin-bottom:9px">Add Task / Reminder</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input type="text" id="taskTitle" placeholder="Task or item to order…">
+      <div class="row">
+        <div><label>Category</label>
+          <select id="taskCat"><option value="task">Task</option><option value="order">🛒 Order</option><option value="menu">🍽️ Menu</option><option value="file">📁 File</option></select>
+        </div>
+        <div><label>Due date</label><input type="date" id="taskDate" style="padding:9px 10px;"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addTask()" style="align-self:flex-start">+ Add</button>
+    </div>
+  </div>
+  <div id="taskList"></div>
+</div>
+
+<!-- MENU -->
+<div class="panel" id="panel-menu">
+  <div class="card">
+    <div class="slabel" style="margin-bottom:9px">Weekly Lunch Menu</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="row">
+        <div><label>Day</label>
+          <select id="menuDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select>
+        </div>
+        <div><label>Meal</label><input type="text" id="menuMeal" placeholder="e.g. Caesar salad"></div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary btn-sm" onclick="addMenu()">Save</button>
+        <button class="btn btn-ghost btn-sm" onclick="generateMenu()">🤖 AI Suggest</button>
+      </div>
+    </div>
+  </div>
+  <div class="menu-grid" id="menuGrid"></div>
+</div>
+
+<!-- FILES -->
+<div class="panel" id="panel-files">
+  <div class="card">
+    <div class="slabel" style="margin-bottom:9px">Track a File / Note</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input type="text" id="fileName" placeholder="File name or title…">
+      <textarea id="fileNote" placeholder="Notes, location, description…" rows="2"></textarea>
+      <div class="row">
+        <select id="fileTag"><option value="📄">📄 Document</option><option value="📊">📊 Spreadsheet</option><option value="🖼️">🖼️ Image</option><option value="📋">📋 Notes</option><option value="📦">📦 Other</option></select>
+        <button class="btn btn-primary btn-sm" onclick="addFile()">+ Add</button>
+      </div>
+    </div>
+  </div>
+  <div id="fileList"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="panel" id="panel-settings">
+  <div class="card accent">
+    <h2>🔑 Gemini API Key</h2>
+    <p>Get your free key at <b>aistudio.google.com</b> → Get API Key → Create API key.</p>
+    <input type="password" id="apiKeyInput" placeholder="AIza…" style="margin:10px 0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn btn-primary btn-sm" onclick="saveKey()">Save Key</button>
+      <span id="keySaved" style="font-size:0.79rem;color:var(--success);display:none">✓ Saved!</span>
+    </div>
+  </div>
+  <div class="card google-card">
+    <h2>🔧 Google OAuth Client ID</h2>
+    <p>You'll get this from Google Cloud Console. See the setup guide below.</p>
+    <input type="text" id="clientIdInput" placeholder="xxxx.apps.googleusercontent.com" style="margin:10px 0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn btn-primary btn-sm" onclick="saveClientId()">Save & Init</button>
+      <span id="clientIdSaved" style="font-size:0.79rem;color:var(--success);display:none">✓ Saved!</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📋 Google Cloud Setup Guide</h2>
+    <ol style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+      <li>Go to <code>console.cloud.google.com</code> and sign in</li>
+      <li>Click <b>Select a project</b> → <b>New Project</b> → name it anything → <b>Create</b></li>
+      <li>In the left menu go to <b>APIs & Services → Library</b></li>
+      <li>Search <b>Google Drive API</b> → click it → <b>Enable</b></li>
+      <li>Search <b>Google Docs API</b> → click it → <b>Enable</b></li>
+      <li>Go to <b>APIs & Services → OAuth consent screen</b></li>
+      <li>Choose <b>External</b> → fill in App name (anything) and your email → Save</li>
+      <li>Go to <b>APIs & Services → Credentials</b></li>
+      <li>Click <b>+ Create Credentials → OAuth client ID</b></li>
+      <li>Application type: <b>Web application</b></li>
+      <li>Under <b>Authorized JavaScript origins</b> add: <code id="originHint">this page's URL</code></li>
+      <li>Click <b>Create</b> → copy the <b>Client ID</b></li>
+      <li>Paste the Client ID in the field above and click Save</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>🤖 Assistant Personality</h2>
+    <input type="text" id="assistantName" placeholder="Assistant name e.g. Nova" style="margin-bottom:9px">
+    <textarea id="customPrompt" placeholder="Custom instructions e.g. I work in marketing. Be concise." rows="3"></textarea>
+    <br><br>
+    <button class="btn btn-primary btn-sm" onclick="savePersonality()">Save</button>
+  </div>
+  <div class="card">
+    <h2>🗑️ Clear All Data</h2>
+    <p>Removes all tasks, docs, menus, and files from this device.</p>
+    <br>
+    <button class="btn btn-danger btn-sm" onclick="clearAll()">Clear Everything</button>
+  </div>
+</div>
+
+<!-- Drive Picker Modal -->
+<div class="modal-overlay" id="pickerModal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2>☁️ Your Google Docs</h2>
+    <input type="text" id="driveSearch" placeholder="Search docs…" oninput="filterDrive()" style="padding:9px 12px;font-size:0.84rem">
+    <div class="modal-list" id="driveList"><div class="empty">Loading…</div></div>
+    <div class="row">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="pinSelected()">Pin Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+<script>
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly';
+
+let state = { apiKey:'', clientId:'', assistantName:'Assistant', customPrompt:'', tasks:[], menu:{}, files:[], pinnedDocs:[], chatHistory:[] };
+let tokenClient = null, accessToken = null;
+let driveFiles = [], selectedInModal = new Set();
+
+function save() { try { localStorage.setItem('va3_state', JSON.stringify(state)); } catch(e){} }
+function load() { try { const d = JSON.parse(localStorage.getItem('va3_state')||'{}'); state = Object.assign(state, d); } catch(e){} }
+
+load();
+renderAll();
+initUI();
+
+function initUI() {
+  document.getElementById('originHint').textContent = location.origin;
+  if (state.apiKey) document.getElementById('apiKeyInput').value = state.apiKey;
+  if (state.clientId) document.getElementById('clientIdInput').value = state.clientId;
+  document.getElementById('assistantName').value = state.assistantName||'';
+  document.getElementById('customPrompt').value = state.customPrompt||'';
+  updateGeminiStatus();
+  if (state.clientId) initGoogleAuth();
+}
+
+// ── Status ────────────────────────────────────────────
+function updateGeminiStatus() {
+  const on = !!state.apiKey;
+  document.getElementById('geminiDot').className = 'dot'+(on?' on':'');
+  document.getElementById('geminiLabel').textContent = on ? 'Gemini ✓' : 'Gemini';
+  document.getElementById('noKeyWarn').style.display = (!state.apiKey||!state.clientId) ? 'block' : 'none';
+}
+function updateGoogleStatus(signedIn) {
+  document.getElementById('googleDot').className = 'dot'+(signedIn?' google':'');
+  document.getElementById('googleLabel').textContent = signedIn ? 'Drive ✓' : 'Drive';
+  document.getElementById('signInBtn').style.display = signedIn ? 'none' : 'flex';
+  document.getElementById('signOutBtn').style.display = signedIn ? 'flex' : 'none';
+  document.getElementById('driveSection').style.display = signedIn ? 'flex' : 'none';
+  document.getElementById('driveSignedOut').style.display = signedIn ? 'none' : 'block';
+  if (signedIn) renderPinnedDocs();
+}
+
+// ── Settings ──────────────────────────────────────────
+function switchTab(id,btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function saveKey() {
+  state.apiKey = document.getElementById('apiKeyInput').value.trim();
+  save(); updateGeminiStatus();
+  flash('keySaved');
+}
+function saveClientId() {
+  state.clientId = document.getElementById('clientIdInput').value.trim();
+  save(); flash('clientIdSaved');
+  if (state.clientId) initGoogleAuth();
+}
+function savePersonality() {
+  state.assistantName = document.getElementById('assistantName').value||'Assistant';
+  state.customPrompt = document.getElementById('customPrompt').value;
+  save(); alert('Saved!');
+}
+function clearAll() {
+  if (!confirm('Clear all data?')) return;
+  state.tasks=[]; state.menu={}; state.files=[]; state.pinnedDocs=[]; state.chatHistory=[];
+  save(); renderAll(); renderDocSelector();
+}
+function flash(id) { const el=document.getElementById(id); el.style.display='inline'; setTimeout(()=>el.style.display='none',2000); }
+
+// ── Google Auth ───────────────────────────────────────
+function initGoogleAuth() {
+  if (!window.google || !state.clientId) return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: state.clientId,
+    scope: SCOPES,
+    callback: (resp) => {
+      if (resp.error) { console.error(resp); return; }
+      accessToken = resp.access_token;
+      updateGoogleStatus(true);
+    }
+  });
+}
+
+// Retry init after GSI loads
+window.addEventListener('load', () => { setTimeout(() => { if (state.clientId) initGoogleAuth(); }, 1000); });
+
+function googleSignIn() {
+  if (!state.clientId) { alert('Please save your Google OAuth Client ID in Settings first.'); return; }
+  if (!tokenClient) { initGoogleAuth(); setTimeout(googleSignIn, 800); return; }
+  tokenClient.requestAccessToken();
+}
+function googleSignOut() {
+  if (accessToken) google.accounts.oauth2.revoke(accessToken);
+  accessToken = null;
+  updateGoogleStatus(false);
+}
+
+// ── Drive / Docs ──────────────────────────────────────
+async function fetchDriveFiles() {
+  if (!accessToken) return [];
+  const url = 'https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.document%22+and+trashed%3Dfalse&fields=files(id,name,modifiedTime)&pageSize=50&orderBy=modifiedTime+desc';
+  const res = await fetch(url, { headers: { Authorization: 'Bearer '+accessToken } });
+  const data = await res.json();
+  return data.files || [];
+}
+
+async function fetchDocContent(fileId) {
+  // Export Google Doc as plain text
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/plain`, {
+    headers: { Authorization: 'Bearer '+accessToken }
+  });
+  if (!res.ok) throw new Error('Could not read document');
+  return await res.text();
+}
+
+async function openPicker() {
+  if (!accessToken) { alert('Please sign in to Google Drive first.'); return; }
+  document.getElementById('pickerModal').style.display = 'flex';
+  document.getElementById('driveList').innerHTML = '<div class="empty">Loading your docs…</div>';
+  selectedInModal.clear();
+  try {
+    driveFiles = await fetchDriveFiles();
+    renderDriveList(driveFiles);
+  } catch(e) {
+    document.getElementById('driveList').innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+  }
+}
+
+function renderDriveList(files) {
+  if (!files.length) { document.getElementById('driveList').innerHTML = '<div class="empty">No Google Docs found.</div>'; return; }
+  document.getElementById('driveList').innerHTML = files.map(f => {
+    const mod = new Date(f.modifiedTime).toLocaleDateString();
+    const pinned = state.pinnedDocs.find(d=>d.id===f.id);
+    const sel = selectedInModal.has(f.id);
+    return `<div class="picker-item ${sel?'selected':''}" id="pi-${f.id}" onclick="togglePickerItem('${f.id}')">
+      <span style="font-size:1.2rem">📄</span>
+      <div style="flex:1;min-width:0">
+        <div class="picker-name">${esc(f.name)}</div>
+        <div class="picker-meta">Modified ${mod}${pinned?' · ✓ Pinned':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterDrive() {
+  const q = document.getElementById('driveSearch').value.toLowerCase();
+  renderDriveList(driveFiles.filter(f=>f.name.toLowerCase().includes(q)));
+}
+
+function togglePickerItem(id) {
+  if (selectedInModal.has(id)) selectedInModal.delete(id);
+  else selectedInModal.add(id);
+  const el = document.getElementById('pi-'+id);
+  if (el) el.classList.toggle('selected', selectedInModal.has(id));
+}
+
+function pinSelected() {
+  selectedInModal.forEach(id => {
+    if (!state.pinnedDocs.find(d=>d.id===id)) {
+      const f = driveFiles.find(f=>f.id===id);
+      if (f) state.pinnedDocs.push({ id:f.id, name:f.name, modified:f.modifiedTime });
+    }
+  });
+  save(); closeModal(); renderPinnedDocs(); renderDocSelector();
+}
+
+function unpinDoc(id) {
+  state.pinnedDocs = state.pinnedDocs.filter(d=>d.id!==id);
+  save(); renderPinnedDocs(); renderDocSelector();
+}
+
+function renderPinnedDocs() {
+  const el = document.getElementById('pinnedDocs');
+  if (!state.pinnedDocs.length) { el.innerHTML='<div class="empty">No docs pinned yet.<br>Click "Browse Drive" to add some.</div>'; return; }
+  el.innerHTML = state.pinnedDocs.map(d=>`
+    <div class="doc-card">
+      <div class="doc-icon">📄</div>
+      <div class="doc-info">
+        <div class="doc-name">${esc(d.name)}</div>
+        <div class="doc-meta">Modified ${new Date(d.modified).toLocaleDateString()}</div>
+      </div>
+      <div class="doc-actions">
+        <button class="btn btn-danger btn-sm" onclick="unpinDoc('${d.id}')">Unpin</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderDocSelector() {
+  const sel = document.getElementById('docSelector');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— None —</option>' +
+    state.pinnedDocs.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+  if ([...sel.options].find(o=>o.value===cur)) sel.value = cur;
+  onDocSelect();
+}
+
+function onDocSelect() {
+  const id = document.getElementById('docSelector').value;
+  const bar = document.getElementById('refBar');
+  if (!id) { bar.style.display='none'; return; }
+  const doc = state.pinnedDocs.find(d=>d.id===id);
+  bar.style.display='flex';
+  document.getElementById('refBarName').textContent = doc ? doc.name : id;
+}
+function clearRef() { document.getElementById('docSelector').value=''; onDocSelect(); }
+function closeModal() { document.getElementById('pickerModal').style.display='none'; }
+
+// ── Chat ──────────────────────────────────────────────
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  if (!state.apiKey) { alert('Please add your Gemini API key in Settings.'); return; }
+  input.value = '';
+  appendMsg('user', msg);
+
+  const thinking = appendMsg('ai', 'Thinking…', true);
+
+  // Fetch selected doc content live from Drive
+  let docContext = '';
+  const selId = document.getElementById('docSelector').value;
+  if (selId) {
+    if (!accessToken) {
+      thinking.remove();
+      appendMsg('ai', '⚠️ Please sign in to Google Drive first (Drive tab).');
+      return;
+    }
+    const doc = state.pinnedDocs.find(d=>d.id===selId);
+    thinking.textContent = `Reading "${doc?.name||'document'}" from Drive…`;
+    try {
+      const content = await fetchDocContent(selId);
+      docContext = `\n\n---\nLIVE DOCUMENT: "${doc?.name||selId}"\n${content.slice(0,12000)}\n---\nAnswer the user's question using this document. It was fetched live from Google Drive right now.`;
+    } catch(e) {
+      thinking.remove();
+      appendMsg('ai', '⚠️ Could not read document: '+e.message);
+      return;
+    }
+    thinking.textContent = 'Thinking…';
+  }
+
+  const taskSummary = state.tasks.filter(t=>!t.done).map(t=>`- [${t.cat}] ${t.title}${t.date?' (due '+t.date+')':''}`).join('\n')||'None';
+  const menuSummary = DAYS.map(d=>state.menu[d]?`${d}: ${state.menu[d]}`:'').filter(Boolean).join(', ')||'Not set';
+
+  const sys = `You are ${state.assistantName||'Assistant'}, a helpful personal assistant.
+Pending tasks: ${taskSummary}
+Lunch menu: ${menuSummary}
+${state.customPrompt?'User preferences: '+state.customPrompt:''}${docContext}
+Be concise and practical.`;
+
+  state.chatHistory.push({ role:'user', parts:[{text:msg}] });
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ system_instruction:{parts:[{text:sys}]}, contents:state.chatHistory, generationConfig:{maxOutputTokens:1200,temperature:0.7} })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text||'No response.';
+    thinking.remove();
+    appendMsg('ai', reply);
+    state.chatHistory.push({ role:'model', parts:[{text:reply}] });
+    if (state.chatHistory.length>24) state.chatHistory=state.chatHistory.slice(-24);
+    save();
+  } catch(e) {
+    thinking.remove();
+    appendMsg('ai','⚠️ Error: '+e.message);
+  }
+}
+
+function appendMsg(role, text, thinking=false) {
+  const div = document.createElement('div');
+  div.className = 'msg '+role+(thinking?' thinking':'');
+  div.textContent = text;
+  const c = document.getElementById('chatMessages');
+  c.appendChild(div); c.scrollTop=c.scrollHeight;
+  return div;
+}
+
+// ── Tasks ─────────────────────────────────────────────
+function addTask() {
+  const title = document.getElementById('taskTitle').value.trim();
+  if (!title) return;
+  state.tasks.unshift({id:Date.now(),title,cat:document.getElementById('taskCat').value,date:document.getElementById('taskDate').value,done:false});
+  document.getElementById('taskTitle').value=''; document.getElementById('taskDate').value='';
+  save(); renderTasks();
+}
+function toggleTask(id){const t=state.tasks.find(t=>t.id===id);if(t){t.done=!t.done;save();renderTasks();}}
+function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);save();renderTasks();}
+function renderTasks(){
+  const el=document.getElementById('taskList');
+  if(!state.tasks.length){el.innerHTML='<div class="empty">No tasks yet.</div>';return;}
+  const today=new Date().toISOString().slice(0,10);
+  const groups=[
+    {label:'⚠️ Overdue',color:'var(--danger)',items:state.tasks.filter(t=>!t.done&&t.date&&t.date<today)},
+    {label:'Pending',color:'',items:state.tasks.filter(t=>!t.done&&!(t.date&&t.date<today))},
+    {label:'Done',color:'',items:state.tasks.filter(t=>t.done)}
+  ];
+  el.innerHTML=groups.filter(g=>g.items.length).map(g=>
+    `<div class="slabel" style="margin-top:8px;color:${g.color||'var(--text2)'}">${g.label}</div>`+
+    g.items.map(t=>`<div class="task-card ${t.done?'done':''}">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})">
+      <div class="task-info"><div class="task-title">${esc(t.title)}</div><div class="task-meta">${t.cat}${t.date?' · 📅 '+t.date:''}</div></div>
+      <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">✕</button>
+    </div>`).join('')
+  ).join('');
+}
+
+// ── Menu ──────────────────────────────────────────────
+function addMenu(){const meal=document.getElementById('menuMeal').value.trim();if(!meal)return;state.menu[document.getElementById('menuDay').value]=meal;document.getElementById('menuMeal').value='';save();renderMenu();}
+async function generateMenu(){
+  if(!state.apiKey){alert('Add Gemini API key in Settings.');return;}
+  const btn=event.currentTarget;btn.textContent='⏳…';btn.disabled=true;
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:`Suggest a healthy varied weekly lunch menu for 7 days Mon–Sun.${state.customPrompt?' Preferences: '+state.customPrompt:''} Reply ONLY with JSON like {"Monday":"meal",...}`}]}],generationConfig:{maxOutputTokens:300,temperature:0.9}})});
+    const data=await res.json();
+    Object.assign(state.menu,JSON.parse((data.candidates?.[0]?.content?.parts?.[0]?.text||'{}').replace(/```json|```/g,'').trim()));
+    save();renderMenu();
+  }catch(e){alert('Error: '+e.message);}
+  btn.textContent='🤖 AI Suggest';btn.disabled=false;
+}
+function renderMenu(){document.getElementById('menuGrid').innerHTML=DAYS.map(d=>`<div class="day-card"><h3>${d}</h3><p>${state.menu[d]?`<b>${esc(state.menu[d])}</b>`:'<i style="font-size:0.73rem">Not set</i>'}</p>${state.menu[d]?`<button onclick="delete state.menu['${d}'];save();renderMenu();" style="margin-top:4px;font-size:0.69rem;background:none;border:none;color:var(--text2);cursor:pointer">✕</button>`:''}</div>`).join('');}
+
+// ── Files ─────────────────────────────────────────────
+function addFile(){const name=document.getElementById('fileName').value.trim();if(!name)return;state.files.unshift({id:Date.now(),name,note:document.getElementById('fileNote').value.trim(),icon:document.getElementById('fileTag').value,date:new Date().toLocaleDateString()});document.getElementById('fileName').value='';document.getElementById('fileNote').value='';save();renderFiles();}
+function deleteFile(id){state.files=state.files.filter(f=>f.id!==id);save();renderFiles();}
+function renderFiles(){const el=document.getElementById('fileList');if(!state.files.length){el.innerHTML='<div class="empty">No files tracked yet.</div>';return;}el.innerHTML=state.files.map(f=>`<div class="file-card"><div class="file-icon">${f.icon}</div><div class="file-info"><div class="file-name">${esc(f.name)}</div>${f.note?`<div class="file-meta">${esc(f.note)}</div>`:''}<div class="file-meta">Added ${f.date}</div></div><button class="btn btn-danger btn-sm" onclick="deleteFile(${f.id})">✕</button></div>`).join('');}
+
+function renderAll(){renderTasks();renderMenu();renderFiles();renderPinnedDocs();renderDocSelector();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
