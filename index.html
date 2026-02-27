@@ -311,11 +311,11 @@
 </div>
 
 <!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 
 <script>
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/calendar.readonly';
 
 let state = { apiKey:'', clientId:'', assistantName:'Assistant', customPrompt:'', tasks:[], menu:{}, files:[], pinnedDocs:[], chatHistory:[] };
 let tokenClient = null, accessToken = null;
@@ -386,25 +386,30 @@ function flash(id) { const el=document.getElementById(id); el.style.display='inl
 
 // ── Google Auth ───────────────────────────────────────
 function initGoogleAuth() {
-  if (!window.google || !state.clientId) return;
+  if (!window.google?.accounts || !state.clientId) return;
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: state.clientId,
     scope: SCOPES,
     callback: (resp) => {
-      if (resp.error) { console.error(resp); return; }
+      if (resp.error) { alert('Google sign-in error: ' + resp.error); return; }
       accessToken = resp.access_token;
       updateGoogleStatus(true);
     }
   });
 }
 
-// Retry init after GSI loads
-window.addEventListener('load', () => { setTimeout(() => { if (state.clientId) initGoogleAuth(); }, 1000); });
+function waitForGoogleThenInit(attempts=0) {
+  if (window.google?.accounts) { if (state.clientId) initGoogleAuth(); }
+  else if (attempts < 20) setTimeout(() => waitForGoogleThenInit(attempts+1), 300);
+}
+document.addEventListener('DOMContentLoaded', () => waitForGoogleThenInit());
 
 function googleSignIn() {
   if (!state.clientId) { alert('Please save your Google OAuth Client ID in Settings first.'); return; }
-  if (!tokenClient) { initGoogleAuth(); setTimeout(googleSignIn, 800); return; }
-  tokenClient.requestAccessToken();
+  if (!window.google?.accounts) { alert('Google library not loaded yet. Please wait a moment and try again.'); return; }
+  if (!tokenClient) initGoogleAuth();
+  if (!tokenClient) { alert('Could not initialize Google sign-in. Check your Client ID in Settings.'); return; }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 function googleSignOut() {
   if (accessToken) google.accounts.oauth2.revoke(accessToken);
