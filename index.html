@@ -420,16 +420,26 @@ function googleSignOut() {
 // ── Drive / Docs ──────────────────────────────────────
 async function fetchDriveFiles() {
   if (!accessToken) return [];
-  const url = 'https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.document%22+and+trashed%3Dfalse&fields=files(id,name,modifiedTime)&pageSize=50&orderBy=modifiedTime+desc';
-  const res = await fetch(url, { headers: { Authorization: 'Bearer '+accessToken } });
+  const params = new URLSearchParams({
+    q: 'mimeType="application/vnd.google-apps.document" and trashed=false',
+    fields: 'files(id,name,modifiedTime,driveId)',
+    pageSize: '50',
+    orderBy: 'modifiedTime desc',
+    includeItemsFromAllDrives: 'true',
+    supportsAllDrives: 'true',
+    corpora: 'allDrives'
+  });
+  const res = await fetch('https://www.googleapis.com/drive/v3/files?' + params, {
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
   const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
   return data.files || [];
 }
 
 async function fetchDocContent(fileId) {
-  // Export Google Doc as plain text
-  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/plain`, {
-    headers: { Authorization: 'Bearer '+accessToken }
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/plain&supportsAllDrives=true`, {
+    headers: { Authorization: 'Bearer ' + accessToken }
   });
   if (!res.ok) throw new Error('Could not read document');
   return await res.text();
