@@ -52,6 +52,10 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 .btn.dan{background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent)}
 .btn.gho{background:var(--surf2);color:var(--text2);border:1px solid #f5c0d5}
 .empty{text-align:center;color:var(--text2);font-size:.85rem;padding:24px 14px;line-height:1.6}
+#syncBar{background:var(--surf2);border-bottom:1px solid #f5c0d5;padding:5px 14px;font-size:.72rem;color:var(--text2);display:none;align-items:center;gap:6px;flex-shrink:0}
+#syncBar.show{display:flex}
+.spin{animation:spin 1s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 /* Chat */
 #chatMsgs{flex:1;display:flex;flex-direction:column;gap:9px;overflow-y:auto;min-height:100px}
 .msg{max-width:88%;padding:10px 13px;border-radius:15px;font-size:.85rem;line-height:1.55}
@@ -83,6 +87,15 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 .ltag-social{background:#4ade8020;color:#16a34a}
 .ltag-tool{background:#fbbf2420;color:#b45309}
 .ltag-other{background:#e2e8f0;color:#64748b}
+/* Packages */
+.pkgcard{background:var(--surf);border-radius:var(--r);padding:13px 15px;border:1px solid #f5c0d5;display:flex;align-items:flex-start;gap:11px}
+.pkgicon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.pkginfo{flex:1;min-width:0}
+.pkgname{font-size:.88rem;font-weight:600}
+.pkgmeta{font-size:.73rem;color:var(--text2);margin-top:2px}
+.pkgnum{font-size:.76rem;color:var(--text2);margin-top:2px;font-family:monospace;word-break:break-all}
+.pkgactions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pkg-delivered{opacity:.5}
 /* Drive */
 .doccard{background:var(--surf);border-radius:var(--r);padding:12px 14px;border:1px solid #f5c0d5;display:flex;align-items:center;gap:11px}
 .doccard .di{font-size:1.3rem;flex-shrink:0}
@@ -99,16 +112,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 .fi{font-size:1.3rem}
 .fn{font-size:.86rem;font-weight:500}
 .fm{font-size:.71rem;color:var(--text2);margin-top:2px}
-/* Packages */
-.pkgcard{background:var(--surf);border-radius:var(--r);padding:13px 15px;border:1px solid #f5c0d5;display:flex;align-items:flex-start;gap:11px}
-.pkgicon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
-.pkginfo{flex:1;min-width:0}
-.pkgname{font-size:.88rem;font-weight:600}
-.pkgmeta{font-size:.73rem;color:var(--text2);margin-top:2px}
-.pkgnum{font-size:.76rem;color:var(--text2);margin-top:2px;font-family:monospace;word-break:break-all}
-.pkgactions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.pkg-delivered{opacity:.5}
-
+/* Modal */
 .overlay{position:fixed;inset:0;background:#0008;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{background:var(--surf);border-radius:var(--r);padding:18px;width:100%;max-width:460px;max-height:78vh;display:flex;flex-direction:column;gap:11px;border:1px solid #f5c0d5}
 .modal h2{font-size:.93rem;color:var(--accent)}
@@ -127,8 +131,11 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <div class="badges">
     <div class="badge"><div class="dot" id="gDot"></div><span id="gLbl">Gemini</span></div>
     <div class="badge"><div class="dot" id="dDot"></div><span id="dLbl">Drive</span></div>
+    <div class="badge"><div class="dot" id="sDot"></div><span id="sLbl">Sheets</span></div>
   </div>
 </div>
+
+<div id="syncBar"><span class="spin">⟳</span><span id="syncMsg">Syncing…</span></div>
 
 <div id="nav">
   <button class="on" onclick="tab('chat',this)">💬 Chat</button>
@@ -150,7 +157,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
     <p>Add your Gemini API key in <b>Settings</b>. To use Drive docs, connect in the <b>Drive</b> tab.</p>
   </div>
   <div id="chatMsgs">
-    <div class="msg a">Hi! I'm Chewey, your personal assistant. Connect Google Drive in the Drive tab so I can reference your live documents. What can I help you with?</div>
+    <div class="msg a">Hi! I'm Chewey, your personal assistant. Your data syncs to Google Sheets so it's always there when you come back. What can I help you with?</div>
   </div>
   <div style="display:flex;flex-direction:column;gap:7px;flex-shrink:0">
     <div id="refBar" class="refbar" style="display:none">
@@ -229,7 +236,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
     <div style="display:flex;flex-direction:column;gap:8px">
       <input type="text" id="lName" placeholder="Title e.g. Brand Guidelines">
       <input type="text" id="lUrl" placeholder="URL e.g. https://…">
-      <textarea id="lDesc" placeholder="Description or notes (optional)…" rows="2"></textarea>
+      <textarea id="lDesc" placeholder="Description (optional)…" rows="2"></textarea>
       <div class="row">
         <div><label>Category</label>
           <select id="lTag">
@@ -250,7 +257,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <div id="linkList"></div>
 </div>
 
-<!-- TRACKING -->
+<!-- PACKAGES -->
 <div class="panel" id="p-tracking">
   <div class="card">
     <div class="slabel" style="margin-bottom:9px">Add Package</div>
@@ -276,6 +283,8 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   </div>
   <div id="pkgList"></div>
 </div>
+
+<!-- MENU -->
 <div class="panel" id="p-menu">
   <div class="card">
     <div class="slabel" style="margin-bottom:9px">Weekly Lunch Menu</div>
@@ -331,6 +340,15 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
       <span id="cSaved" style="font-size:.78rem;color:var(--ok);display:none">✓ Saved!</span>
     </div>
   </div>
+  <div class="card gc">
+    <h2>📊 Google Sheet ID</h2>
+    <p>Create a blank Google Sheet named <b>"Chewey Data"</b>, then paste its URL or ID below. Make sure <b>Google Sheets API</b> is enabled in your Cloud Console.</p>
+    <input type="text" id="sheetIn" placeholder="Sheet URL or ID…" style="margin:10px 0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn pri sml" onclick="saveSheet()">Save</button>
+      <span id="shSaved" style="font-size:.78rem;color:var(--ok);display:none">✓ Saved!</span>
+    </div>
+  </div>
   <div class="card">
     <h2>🤖 Assistant Preferences</h2>
     <input type="text" id="aName" placeholder="Assistant name e.g. Chewey" style="margin-bottom:9px">
@@ -340,7 +358,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   </div>
   <div class="card">
     <h2>🗑️ Clear All Data</h2>
-    <p>Removes all tasks, links, menus, and files from this device.</p><br>
+    <p>Removes all tasks, links, packages, menus, and files from this device and the Sheet.</p><br>
     <button class="btn dan sml" onclick="clearAll()">Clear Everything</button>
   </div>
 </div>
@@ -363,31 +381,99 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 <script src="https://accounts.google.com/gsi/client"></script>
 <script>
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const SCOPES='https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/calendar.readonly';
-const CARRIERS={
-  usps:{name:'USPS',url:'https://tools.usps.com/go/TrackConfirmAction?tLabels='},
-  ups:{name:'UPS',url:'https://www.ups.com/track?tracknum='},
-  fedex:{name:'FedEx',url:'https://www.fedex.com/fedextrack/?trknbr='},
-  amazon:{name:'Amazon',url:'https://track.amazon.com/tracking/'},
-  dhl:{name:'DHL',url:'https://www.dhl.com/en/express/tracking.html?AWB='},
-  lasership:{name:'LaserShip',url:'https://www.lasership.com/track/'},
-  ontrac:{name:'OnTrac',url:'https://www.ontrac.com/tracking/?number='}
-};
-
+const SCOPES='https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/spreadsheets';
+const CARRIERS={usps:{name:'USPS',url:'https://tools.usps.com/go/TrackConfirmAction?tLabels='},ups:{name:'UPS',url:'https://www.ups.com/track?tracknum='},fedex:{name:'FedEx',url:'https://www.fedex.com/fedextrack/?trknbr='},amazon:{name:'Amazon',url:'https://track.amazon.com/tracking/'},dhl:{name:'DHL',url:'https://www.dhl.com/en/express/tracking.html?AWB='},lasership:{name:'LaserShip',url:'https://www.lasership.com/track/'},ontrac:{name:'OnTrac',url:'https://www.ontrac.com/tracking/?number='}};
+const TAG_CSS={work:'ltag-work',ref:'ltag-ref',tool:'ltag-tool',social:'ltag-social',other:'ltag-other'};
 const TAG_LABEL={work:'💼 Work',ref:'📚 Reference',tool:'🔧 Tool',social:'🌐 Social',other:'📎 Other'};
 
-let S={apiKey:'',clientId:'',assistantName:'Chewey',customPrompt:'',tasks:[],links:[],packages:[],menu:{},files:[],pinned:[],history:[]};
+// Settings stored only in localStorage (not sensitive app data)
+let CFG={apiKey:'',clientId:'',sheetId:'',assistantName:'Chewey',customPrompt:''};
+// App data synced to Sheets
+let S={tasks:[],links:[],packages:[],menu:{},files:[],pinned:[]};
+let chatHistory=[];
+
 let tokenClient=null,token=null,driveFiles=[],picked=new Set(),linkFilter='all';
+let syncTimeout=null,sheetReady=false;
 
-function save(){try{localStorage.setItem('chewey',JSON.stringify(S));}catch(e){}}
-function load(){try{var d=JSON.parse(localStorage.getItem('chewey')||'{}');Object.assign(S,d);}catch(e){}}
+// ── Config (localStorage only) ────────────────────────
+function saveCfg(){try{localStorage.setItem('chewey_cfg',JSON.stringify(CFG));}catch(e){}}
+function loadCfg(){try{var d=JSON.parse(localStorage.getItem('chewey_cfg')||'{}');Object.assign(CFG,d);}catch(e){}}
 
-load();
-document.getElementById('apiIn').value=S.apiKey||'';
-document.getElementById('cidIn').value=S.clientId||'';
-document.getElementById('aName').value=S.assistantName||'';
-document.getElementById('aPrompt').value=S.customPrompt||'';
+// ── Sheet helpers ─────────────────────────────────────
+function parseSheetId(val){
+  val=val.trim();
+  var m=val.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  return m?m[1]:val;
+}
+
+async function sheetRead(){
+  if(!token||!CFG.sheetId)return null;
+  try{
+    var r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+CFG.sheetId+'/values/A1:A1',{headers:{Authorization:'Bearer '+token}});
+    if(!r.ok)return null;
+    var d=await r.json();
+    var raw=d.values&&d.values[0]&&d.values[0][0];
+    if(!raw)return null;
+    return JSON.parse(raw);
+  }catch(e){return null;}
+}
+
+async function sheetWrite(data){
+  if(!token||!CFG.sheetId)return;
+  var body={values:[[JSON.stringify(data)]]};
+  await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+CFG.sheetId+'/values/A1?valueInputOption=RAW',{method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+}
+
+function showSync(msg){
+  var bar=document.getElementById('syncBar');
+  bar.classList.add('show');
+  document.getElementById('syncMsg').textContent=msg||'Syncing…';
+}
+function hideSync(){document.getElementById('syncBar').classList.remove('show');}
+function updateSheetDot(on){
+  document.getElementById('sDot').className='dot'+(on?' gon':'');
+  document.getElementById('sLbl').textContent=on?'Sheets ✓':'Sheets';
+}
+
+// Debounced save: wait 1s after last change then write to Sheet
+function save(){
+  // Always save to localStorage immediately as backup
+  try{localStorage.setItem('chewey_data',JSON.stringify(S));}catch(e){}
+  // Debounce Sheet write
+  if(syncTimeout)clearTimeout(syncTimeout);
+  syncTimeout=setTimeout(async function(){
+    if(token&&CFG.sheetId){
+      showSync('Saving…');
+      try{await sheetWrite(S);updateSheetDot(true);}
+      catch(e){console.error('Sheet write error',e);}
+      hideSync();
+    }
+  },1000);
+}
+
+async function loadData(){
+  // Try Sheet first
+  if(token&&CFG.sheetId){
+    showSync('Loading your data…');
+    var data=await sheetRead();
+    hideSync();
+    if(data){Object.assign(S,data);updateSheetDot(true);return;}
+  }
+  // Fallback to localStorage
+  try{var d=JSON.parse(localStorage.getItem('chewey_data')||'{}');if(d&&Object.keys(d).length)Object.assign(S,d);}catch(e){}
+}
+
+// ── Init ──────────────────────────────────────────────
+loadCfg();
+document.getElementById('apiIn').value=CFG.apiKey||'';
+document.getElementById('cidIn').value=CFG.clientId||'';
+document.getElementById('sheetIn').value=CFG.sheetId||'';
+document.getElementById('aName').value=CFG.assistantName||'';
+document.getElementById('aPrompt').value=CFG.customPrompt||'';
 updateGeminiDot();
+
+// Render with localStorage data immediately, then refresh from Sheet after sign-in
+try{var ld=JSON.parse(localStorage.getItem('chewey_data')||'{}');if(ld&&Object.keys(ld).length)Object.assign(S,ld);}catch(e){}
 renderAll();
 
 function tab(id,btn){
@@ -398,7 +484,7 @@ function tab(id,btn){
 }
 
 function updateGeminiDot(){
-  var on=!!S.apiKey;
+  var on=!!CFG.apiKey;
   document.getElementById('gDot').className='dot'+(on?' on':'');
   document.getElementById('gLbl').textContent=on?'Gemini ✓':'Gemini';
   document.getElementById('chatWarn').style.display=on?'none':'block';
@@ -413,34 +499,51 @@ function updateDriveDot(on){
   if(on)renderPinned();
 }
 
-function saveKey(){S.apiKey=document.getElementById('apiIn').value.trim();save();updateGeminiDot();flash('kSaved');}
-function saveCid(){S.clientId=document.getElementById('cidIn').value.trim();save();flash('cSaved');initGA();}
-function savePersonality(){S.assistantName=document.getElementById('aName').value||'Chewey';S.customPrompt=document.getElementById('aPrompt').value;save();alert('Saved!');}
-function clearAll(){if(!confirm('Clear all data?'))return;S.tasks=[];S.links=[];S.packages=[];S.menu={};S.files=[];S.pinned=[];S.history=[];save();renderAll();renderDocSel();}
+// ── Settings ──────────────────────────────────────────
+function saveKey(){CFG.apiKey=document.getElementById('apiIn').value.trim();saveCfg();updateGeminiDot();flash('kSaved');}
+function saveCid(){CFG.clientId=document.getElementById('cidIn').value.trim();saveCfg();flash('cSaved');initGA();}
+function saveSheet(){
+  CFG.sheetId=parseSheetId(document.getElementById('sheetIn').value);
+  document.getElementById('sheetIn').value=CFG.sheetId;
+  saveCfg();flash('shSaved');
+  if(token)loadData().then(function(){renderAll();renderDocSel();});
+}
+function savePersonality(){CFG.assistantName=document.getElementById('aName').value||'Chewey';CFG.customPrompt=document.getElementById('aPrompt').value;saveCfg();alert('Saved!');}
+function clearAll(){
+  if(!confirm('Clear all data from app and Google Sheet?'))return;
+  S={tasks:[],links:[],packages:[],menu:{},files:[],pinned:[]};
+  save();renderAll();renderDocSel();
+}
 function flash(id){var el=document.getElementById(id);el.style.display='inline';setTimeout(function(){el.style.display='none';},2000);}
 
-// Google Auth
+// ── Google Auth ───────────────────────────────────────
 function initGA(){
-  if(!window.google||!window.google.accounts||!S.clientId)return;
+  if(!window.google||!window.google.accounts||!CFG.clientId)return;
   tokenClient=google.accounts.oauth2.initTokenClient({
-    client_id:S.clientId,scope:SCOPES,
-    callback:function(r){
+    client_id:CFG.clientId,scope:SCOPES,
+    callback:async function(r){
       if(r.error){if(r.error!=='interaction_required'&&r.error!=='consent_required')alert('Sign-in error: '+r.error);return;}
-      token=r.access_token;updateDriveDot(true);
+      token=r.access_token;
+      updateDriveDot(true);
+      // Load data from Sheet after sign-in
+      if(CFG.sheetId){
+        await loadData();
+        renderAll();renderDocSel();
+      }
     }
   });
 }
 function tryInitGA(n){
-  if(window.google&&window.google.accounts){if(S.clientId){initGA();silentSignIn();}}
+  if(window.google&&window.google.accounts){if(CFG.clientId){initGA();silentSignIn();}}
   else if(n<30)setTimeout(function(){tryInitGA(n+1);},300);
 }
 tryInitGA(0);
-function silentSignIn(){if(!S.clientId||!window.google||!window.google.accounts)return;if(!tokenClient)initGA();if(!tokenClient)return;tokenClient.requestAccessToken({prompt:''});}
-setInterval(function(){if(token&&S.clientId)silentSignIn();},45*60*1000);
-function gSignIn(){if(!S.clientId){alert('Save your Client ID in Settings first.');return;}if(!window.google||!window.google.accounts){alert('Google library still loading, please wait.');return;}if(!tokenClient)initGA();if(!tokenClient){alert('Could not initialize. Check your Client ID.');return;}tokenClient.requestAccessToken({prompt:'consent'});}
-function gSignOut(){if(token)google.accounts.oauth2.revoke(token);token=null;updateDriveDot(false);}
+function silentSignIn(){if(!CFG.clientId||!window.google||!window.google.accounts)return;if(!tokenClient)initGA();if(!tokenClient)return;tokenClient.requestAccessToken({prompt:''});}
+setInterval(function(){if(token&&CFG.clientId)silentSignIn();},45*60*1000);
+function gSignIn(){if(!CFG.clientId){alert('Save your Client ID in Settings first.');return;}if(!window.google||!window.google.accounts){alert('Google library still loading.');return;}if(!tokenClient)initGA();if(!tokenClient){alert('Could not initialize. Check your Client ID.');return;}tokenClient.requestAccessToken({prompt:'consent'});}
+function gSignOut(){if(token)google.accounts.oauth2.revoke(token);token=null;updateDriveDot(false);updateSheetDot(false);}
 
-// Drive
+// ── Drive ─────────────────────────────────────────────
 async function fetchDocs(){
   var p=new URLSearchParams({q:'mimeType="application/vnd.google-apps.document" and trashed=false',fields:'files(id,name,modifiedTime)',pageSize:'50',orderBy:'modifiedTime desc',includeItemsFromAllDrives:'true',supportsAllDrives:'true',corpora:'allDrives'});
   var r=await fetch('https://www.googleapis.com/drive/v3/files?'+p,{headers:{Authorization:'Bearer '+token}});
@@ -462,7 +565,7 @@ function renderDriveList(files){
   if(!files.length){document.getElementById('drList').innerHTML='<div class="empty">No Google Docs found.</div>';return;}
   document.getElementById('drList').innerHTML=files.map(function(f){
     var mod=new Date(f.modifiedTime).toLocaleDateString();
-    var already=S.pinned.find(function(p){return p.id===f.id;});
+    var already=S.pinned&&S.pinned.find(function(p){return p.id===f.id;});
     var sel=picked.has(f.id);
     return '<div class="pitem'+(sel?' sel':'')+'" id="pi-'+f.id+'" onclick="togglePick(\''+f.id+'\')">'
       +'<span style="font-size:1.2rem">📄</span>'
@@ -473,6 +576,7 @@ function renderDriveList(files){
 function filterDrive(){var q=document.getElementById('drSearch').value.toLowerCase();renderDriveList(driveFiles.filter(function(f){return f.name.toLowerCase().includes(q);}));}
 function togglePick(id){if(picked.has(id))picked.delete(id);else picked.add(id);var el=document.getElementById('pi-'+id);if(el)el.classList.toggle('sel',picked.has(id));}
 function pinSelected(){
+  if(!S.pinned)S.pinned=[];
   picked.forEach(function(id){
     if(!S.pinned.find(function(p){return p.id===id;})){
       var f=driveFiles.find(function(f){return f.id===id;});
@@ -485,7 +589,7 @@ function unpin(id){S.pinned=S.pinned.filter(function(d){return d.id!==id;});save
 function closeModal(){document.getElementById('modal').style.display='none';}
 function renderPinned(){
   var el=document.getElementById('pinnedList');
-  if(!S.pinned.length){el.innerHTML='<div class="empty">No docs pinned yet.<br>Click "Browse Drive" to add some.</div>';return;}
+  if(!S.pinned||!S.pinned.length){el.innerHTML='<div class="empty">No docs pinned yet.</div>';return;}
   el.innerHTML=S.pinned.map(function(d){
     return '<div class="doccard"><div class="di">📄</div>'
       +'<div style="flex:1;min-width:0"><div class="dn">'+esc(d.name)+'</div>'
@@ -495,43 +599,43 @@ function renderPinned(){
 }
 function renderDocSel(){
   var sel=document.getElementById('docSel');var cur=sel.value;
-  sel.innerHTML='<option value="">— None —</option>'+S.pinned.map(function(d){return'<option value="'+d.id+'">'+esc(d.name)+'</option>';}).join('');
+  sel.innerHTML='<option value="">— None —</option>'+((S.pinned||[]).map(function(d){return'<option value="'+d.id+'">'+esc(d.name)+'</option>';})).join('');
   if([].slice.call(sel.options).find(function(o){return o.value===cur;}))sel.value=cur;
   onDocSel();
 }
 function onDocSel(){
   var id=document.getElementById('docSel').value;var bar=document.getElementById('refBar');
   if(!id){bar.style.display='none';return;}
-  var doc=S.pinned.find(function(d){return d.id===id;});
+  var doc=(S.pinned||[]).find(function(d){return d.id===id;});
   bar.style.display='flex';document.getElementById('refName').textContent=doc?doc.name:id;
 }
 function clearRef(){document.getElementById('docSel').value='';onDocSel();}
 
-// Chat
+// ── Chat ──────────────────────────────────────────────
 async function send(){
   var input=document.getElementById('chatIn');var msg=input.value.trim();
-  if(!msg)return;if(!S.apiKey){alert('Add your Gemini API key in Settings.');return;}
+  if(!msg)return;if(!CFG.apiKey){alert('Add your Gemini API key in Settings.');return;}
   input.value='';addMsg('u',msg);var th=addMsg('a','Thinking…',true);
   var docCtx='';var selId=document.getElementById('docSel').value;
   if(selId){
     if(!token){th.remove();addMsg('a','⚠️ Please sign in to Google Drive first.');return;}
-    var doc=S.pinned.find(function(d){return d.id===selId;});
+    var doc=(S.pinned||[]).find(function(d){return d.id===selId;});
     th.textContent='Reading "'+((doc&&doc.name)||'document')+'" from Drive…';
     try{var content=await fetchContent(selId);docCtx='\n\n---\nLIVE DOCUMENT: "'+(doc?doc.name:selId)+'"\n'+content.slice(0,12000)+'\n---\nAnswer using this document.';}
     catch(e){th.remove();addMsg('a','⚠️ Could not read doc: '+e.message);return;}
     th.textContent='Thinking…';
   }
-  var tasks=S.tasks.filter(function(t){return!t.done;}).map(function(t){return'- ['+t.cat+'] '+t.title+(t.date?' (due '+t.date+')':'')+(t.notes?' - '+t.notes:'');}).join('\n')||'None';
-  var menuS=DAYS.map(function(d){return S.menu[d]?d+': '+S.menu[d]:'';}).filter(Boolean).join(', ')||'Not set';
-  var sys='You are '+(S.assistantName||'Chewey')+', a helpful personal assistant.\nPending tasks: '+tasks+'\nLunch menu: '+menuS+'\n'+(S.customPrompt?'User prefs: '+S.customPrompt:'')+docCtx+'\nBe concise and practical.';
-  S.history.push({role:'user',parts:[{text:msg}]});
+  var tasks=(S.tasks||[]).filter(function(t){return!t.done;}).map(function(t){return'- ['+t.cat+'] '+t.title+(t.date?' (due '+t.date+')':'');}).join('\n')||'None';
+  var menuS=DAYS.map(function(d){return S.menu&&S.menu[d]?d+': '+S.menu[d]:'';}).filter(Boolean).join(', ')||'Not set';
+  var sys='You are '+(CFG.assistantName||'Chewey')+', a helpful personal assistant.\nPending tasks: '+tasks+'\nLunch menu: '+menuS+'\n'+(CFG.customPrompt?'User prefs: '+CFG.customPrompt:'')+docCtx+'\nBe concise and practical.';
+  chatHistory.push({role:'user',parts:[{text:msg}]});
   try{
-    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:S.history,generationConfig:{maxOutputTokens:1200,temperature:0.7}})});
+    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+CFG.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:chatHistory,generationConfig:{maxOutputTokens:1200,temperature:0.7}})});
     var data=await res.json();if(data.error)throw new Error(data.error.message);
     var reply=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:'No response.';
     th.remove();addMsg('a',reply);
-    S.history.push({role:'model',parts:[{text:reply}]});
-    if(S.history.length>24)S.history=S.history.slice(-24);save();
+    chatHistory.push({role:'model',parts:[{text:reply}]});
+    if(chatHistory.length>24)chatHistory=chatHistory.slice(-24);
   }catch(e){th.remove();addMsg('a','⚠️ Error: '+e.message);}
 }
 function addMsg(role,text,th){
@@ -539,22 +643,20 @@ function addMsg(role,text,th){
   var c=document.getElementById('chatMsgs');c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
 }
 
-// Tasks
+// ── Tasks ─────────────────────────────────────────────
 function addTask(){
   var t=document.getElementById('tIn').value.trim();if(!t)return;
+  if(!S.tasks)S.tasks=[];
   S.tasks.unshift({id:Date.now(),title:t,notes:document.getElementById('tNotes').value.trim(),cat:document.getElementById('tCat').value,date:document.getElementById('tDate').value,done:false,expanded:false});
   document.getElementById('tIn').value='';document.getElementById('tNotes').value='';document.getElementById('tDate').value='';
   save();renderTasks();
 }
-function toggleTask(id){var t=S.tasks.find(function(t){return t.id===id;});if(t){t.done=!t.done;save();renderTasks();}}
-function delTask(id){S.tasks=S.tasks.filter(function(t){return t.id!==id;});save();renderTasks();}
-function toggleNotes(id){
-  var t=S.tasks.find(function(t){return t.id===id;});if(!t)return;
-  t.expanded=!t.expanded;save();renderTasks();
-}
+function toggleTask(id){var t=(S.tasks||[]).find(function(t){return t.id===id;});if(t){t.done=!t.done;save();renderTasks();}}
+function delTask(id){S.tasks=(S.tasks||[]).filter(function(t){return t.id!==id;});save();renderTasks();}
+function toggleNotes(id){var t=(S.tasks||[]).find(function(t){return t.id===id;});if(!t)return;t.expanded=!t.expanded;renderTasks();}
 function renderTasks(){
   var el=document.getElementById('taskList');
-  if(!S.tasks.length){el.innerHTML='<div class="empty">No tasks yet.</div>';return;}
+  if(!S.tasks||!S.tasks.length){el.innerHTML='<div class="empty">No tasks yet.</div>';return;}
   var today=new Date().toISOString().slice(0,10);
   var groups=[
     {label:'⚠️ Overdue',col:'var(--danger)',items:S.tasks.filter(function(t){return!t.done&&t.date&&t.date<today;})},
@@ -569,65 +671,59 @@ function renderTasks(){
         +'<div style="flex:1"><div class="ttitle">'+esc(t.title)+'</div>'
         +'<div class="tmeta">'+t.cat+(t.date?' · 📅 '+t.date:'')+'</div>'
         +(t.notes?'<button class="texpand" onclick="toggleNotes('+t.id+')">'+(t.expanded?'▲ Hide notes':'▼ Show notes')+'</button>':'')
-        +'</div>'
-        +'<button class="btn dan sml" onclick="delTask('+t.id+')">✕</button></div>'
+        +'</div><button class="btn dan sml" onclick="delTask('+t.id+')">✕</button></div>'
         +(t.notes&&t.expanded?'<div class="tnotes">'+esc(t.notes)+'</div>':'')
         +'</div>';
     }).join('');
   }).join('');
 }
 
-// Links
+// ── Links ─────────────────────────────────────────────
 function addLink(){
   var name=document.getElementById('lName').value.trim();
   var url=document.getElementById('lUrl').value.trim();
   if(!name||!url)return;
   if(!/^https?:\/\//i.test(url))url='https://'+url;
+  if(!S.links)S.links=[];
   S.links.unshift({id:Date.now(),name,url,desc:document.getElementById('lDesc').value.trim(),tag:document.getElementById('lTag').value,date:new Date().toLocaleDateString()});
   document.getElementById('lName').value='';document.getElementById('lUrl').value='';document.getElementById('lDesc').value='';
   save();renderLinks();
 }
-function delLink(id){S.links=S.links.filter(function(l){return l.id!==id;});save();renderLinks();}
+function delLink(id){S.links=(S.links||[]).filter(function(l){return l.id!==id;});save();renderLinks();}
 function setLinkFilter(f){linkFilter=f;renderLinks();}
 function renderLinks(){
   var el=document.getElementById('linkList');
   var fEl=document.getElementById('linkFilters');
-  // Filters
-  var tags=['all'].concat([...new Set(S.links.map(function(l){return l.tag;}))]);
-  fEl.innerHTML=tags.map(function(t){
-    return '<button class="btn sml'+(linkFilter===t?' pri':' gho')+'" onclick="setLinkFilter(\''+t+'\')">'+(t==='all'?'All':TAG_LABEL[t]||t)+'</button>';
-  }).join('');
-  var filtered=linkFilter==='all'?S.links:S.links.filter(function(l){return l.tag===linkFilter;});
+  var tags=['all'].concat([...new Set((S.links||[]).map(function(l){return l.tag;}))]);
+  fEl.innerHTML=tags.map(function(t){return'<button class="btn sml'+(linkFilter===t?' pri':' gho')+'" onclick="setLinkFilter(\''+t+'\')">'+(t==='all'?'All':TAG_LABEL[t]||t)+'</button>';}).join('');
+  var filtered=linkFilter==='all'?(S.links||[]):(S.links||[]).filter(function(l){return l.tag===linkFilter;});
   if(!filtered.length){el.innerHTML='<div class="empty">No links saved yet.</div>';return;}
   el.innerHTML=filtered.map(function(l){
-    return '<div class="lcard">'
-      +'<div class="licon">🔗</div>'
-      +'<div class="linfo">'
+    return '<div class="lcard"><div class="licon">🔗</div><div class="linfo">'
       +'<div class="lname">'+esc(l.name)+'</div>'
       +(l.desc?'<div class="ldesc">'+esc(l.desc)+'</div>':'')
       +'<a class="lurl" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.url)+'</a>'
       +'<span class="ltag '+(TAG_CSS[l.tag]||'ltag-other')+'">'+( TAG_LABEL[l.tag]||l.tag)+'</span>'
-      +'</div>'
-      +'<button class="btn dan sml" onclick="delLink('+l.id+')" style="flex-shrink:0">✕</button>'
-      +'</div>';
+      +'</div><button class="btn dan sml" onclick="delLink('+l.id+')" style="flex-shrink:0">✕</button></div>';
   }).join('');
 }
 
-// Packages
+// ── Packages ──────────────────────────────────────────
 function addPkg(){
   var name=document.getElementById('pkgName').value.trim();
   var num=document.getElementById('pkgNum').value.trim();
   if(!name||!num)return;
+  if(!S.packages)S.packages=[];
   S.packages.unshift({id:Date.now(),name,num,carrier:document.getElementById('pkgCarrier').value,date:document.getElementById('pkgDate').value,delivered:false});
   document.getElementById('pkgName').value='';document.getElementById('pkgNum').value='';document.getElementById('pkgDate').value='';
   save();renderPkgs();
 }
-function toggleDelivered(id){var p=S.packages.find(function(p){return p.id===id;});if(p){p.delivered=!p.delivered;save();renderPkgs();}}
-function delPkg(id){S.packages=S.packages.filter(function(p){return p.id!==id;});save();renderPkgs();}
+function toggleDelivered(id){var p=(S.packages||[]).find(function(p){return p.id===id;});if(p){p.delivered=!p.delivered;save();renderPkgs();}}
+function delPkg(id){S.packages=(S.packages||[]).filter(function(p){return p.id!==id;});save();renderPkgs();}
 function trackPkg(num,carrier){var c=CARRIERS[carrier];if(c)window.open(c.url+encodeURIComponent(num),'_blank');}
 function renderPkgs(){
   var el=document.getElementById('pkgList');
-  if(!S.packages.length){el.innerHTML='<div class="empty">No packages yet.<br>Add a tracking number above.</div>';return;}
+  if(!S.packages||!S.packages.length){el.innerHTML='<div class="empty">No packages yet.</div>';return;}
   var active=S.packages.filter(function(p){return!p.delivered;});
   var done=S.packages.filter(function(p){return p.delivered;});
   var html='';
@@ -640,8 +736,7 @@ function pkgHTML(p){
   var today=new Date().toISOString().slice(0,10);
   var overdue=p.date&&p.date<today&&!p.delivered;
   return '<div class="pkgcard'+(p.delivered?' pkg-delivered':'')+'">'
-    +'<div class="pkgicon">📦</div>'
-    +'<div class="pkginfo">'
+    +'<div class="pkgicon">📦</div><div class="pkginfo">'
     +'<div class="pkgname">'+esc(p.name)+'</div>'
     +'<div class="pkgmeta">'+c.name+(p.date?' · '+(overdue?'<span style="color:var(--danger)">Expected '+p.date+'</span>':'Expected '+p.date):'')+'</div>'
     +'<div class="pkgnum">'+esc(p.num)+'</div>'
@@ -652,24 +747,26 @@ function pkgHTML(p){
     +'</div></div></div>';
 }
 
-function addMenu(){var m=document.getElementById('mMeal').value.trim();if(!m)return;S.menu[document.getElementById('mDay').value]=m;document.getElementById('mMeal').value='';save();renderMenu();}
+// ── Menu ──────────────────────────────────────────────
+function addMenu(){var m=document.getElementById('mMeal').value.trim();if(!m)return;if(!S.menu)S.menu={};S.menu[document.getElementById('mDay').value]=m;document.getElementById('mMeal').value='';save();renderMenu();}
 async function genMenu(){
-  if(!S.apiKey){alert('Add Gemini API key in Settings.');return;}
+  if(!CFG.apiKey){alert('Add Gemini API key in Settings.');return;}
   var btn=event.currentTarget;btn.textContent='⏳…';btn.disabled=true;
   try{
-    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:'Suggest a healthy varied weekly lunch menu Mon–Sun.'+(S.customPrompt?' Prefs: '+S.customPrompt:'')+' Reply ONLY with JSON: {"Monday":"meal",...}'}]}],generationConfig:{maxOutputTokens:300,temperature:0.9}})});
+    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+CFG.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:'Suggest a healthy varied weekly lunch menu Mon–Sun.'+(CFG.customPrompt?' Prefs: '+CFG.customPrompt:'')+' Reply ONLY with JSON: {"Monday":"meal",...}'}]}],generationConfig:{maxOutputTokens:300,temperature:0.9}})});
     var data=await res.json();
+    if(!S.menu)S.menu={};
     Object.assign(S.menu,JSON.parse((data.candidates[0].content.parts[0].text||'{}').replace(/```json|```/g,'').trim()));
     save();renderMenu();
   }catch(e){alert('Error: '+e.message);}
   btn.textContent='🤖 AI Suggest';btn.disabled=false;
 }
-function renderMenu(){document.getElementById('menuGrid').innerHTML=DAYS.map(function(d){return'<div class="dcard"><h3>'+d+'</h3><p>'+(S.menu[d]?'<b>'+esc(S.menu[d])+'</b>':'<i style="font-size:.72rem">Not set</i>')+'</p>'+(S.menu[d]?'<button onclick="delete S.menu[\''+d+'\'];save();renderMenu();" style="margin-top:4px;font-size:.68rem;background:none;border:none;color:var(--text2);cursor:pointer">✕</button>':'')+'</div>';}).join('');}
+function renderMenu(){document.getElementById('menuGrid').innerHTML=DAYS.map(function(d){return'<div class="dcard"><h3>'+d+'</h3><p>'+(S.menu&&S.menu[d]?'<b>'+esc(S.menu[d])+'</b>':'<i style="font-size:.72rem">Not set</i>')+'</p>'+(S.menu&&S.menu[d]?'<button onclick="delete S.menu[\''+d+'\'];save();renderMenu();" style="margin-top:4px;font-size:.68rem;background:none;border:none;color:var(--text2);cursor:pointer">✕</button>':'')+'</div>';}).join('');}
 
-// Files
-function addFile(){var n=document.getElementById('fName').value.trim();if(!n)return;S.files.unshift({id:Date.now(),name:n,note:document.getElementById('fNote').value.trim(),icon:document.getElementById('fTag').value,date:new Date().toLocaleDateString()});document.getElementById('fName').value='';document.getElementById('fNote').value='';save();renderFiles();}
-function delFile(id){S.files=S.files.filter(function(f){return f.id!==id;});save();renderFiles();}
-function renderFiles(){var el=document.getElementById('fileList');if(!S.files.length){el.innerHTML='<div class="empty">No files tracked yet.</div>';return;}el.innerHTML=S.files.map(function(f){return'<div class="fcard"><div class="fi">'+f.icon+'</div><div style="flex:1"><div class="fn">'+esc(f.name)+'</div>'+(f.note?'<div class="fm">'+esc(f.note)+'</div>':'')+'<div class="fm">Added '+f.date+'</div></div><button class="btn dan sml" onclick="delFile('+f.id+')">✕</button></div>';}).join('');}
+// ── Files ─────────────────────────────────────────────
+function addFile(){var n=document.getElementById('fName').value.trim();if(!n)return;if(!S.files)S.files=[];S.files.unshift({id:Date.now(),name:n,note:document.getElementById('fNote').value.trim(),icon:document.getElementById('fTag').value,date:new Date().toLocaleDateString()});document.getElementById('fName').value='';document.getElementById('fNote').value='';save();renderFiles();}
+function delFile(id){S.files=(S.files||[]).filter(function(f){return f.id!==id;});save();renderFiles();}
+function renderFiles(){var el=document.getElementById('fileList');if(!S.files||!S.files.length){el.innerHTML='<div class="empty">No files tracked yet.</div>';return;}el.innerHTML=S.files.map(function(f){return'<div class="fcard"><div class="fi">'+f.icon+'</div><div style="flex:1"><div class="fn">'+esc(f.name)+'</div>'+(f.note?'<div class="fm">'+esc(f.note)+'</div>':'')+'<div class="fm">Added '+f.date+'</div></div><button class="btn dan sml" onclick="delFile('+f.id+')">✕</button></div>';}).join('');}
 
 function renderAll(){renderTasks();renderLinks();renderPkgs();renderMenu();renderFiles();renderPinned();renderDocSel();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
