@@ -99,7 +99,16 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 .fi{font-size:1.3rem}
 .fn{font-size:.86rem;font-weight:500}
 .fm{font-size:.71rem;color:var(--text2);margin-top:2px}
-/* Modal */
+/* Packages */
+.pkgcard{background:var(--surf);border-radius:var(--r);padding:13px 15px;border:1px solid #f5c0d5;display:flex;align-items:flex-start;gap:11px}
+.pkgicon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.pkginfo{flex:1;min-width:0}
+.pkgname{font-size:.88rem;font-weight:600}
+.pkgmeta{font-size:.73rem;color:var(--text2);margin-top:2px}
+.pkgnum{font-size:.76rem;color:var(--text2);margin-top:2px;font-family:monospace;word-break:break-all}
+.pkgactions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pkg-delivered{opacity:.5}
+
 .overlay{position:fixed;inset:0;background:#0008;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{background:var(--surf);border-radius:var(--r);padding:18px;width:100%;max-width:460px;max-height:78vh;display:flex;flex-direction:column;gap:11px;border:1px solid #f5c0d5}
 .modal h2{font-size:.93rem;color:var(--accent)}
@@ -126,6 +135,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <button onclick="tab('drive',this)">☁️ Drive</button>
   <button onclick="tab('tasks',this)">✅ Tasks</button>
   <button onclick="tab('links',this)">🔗 Links</button>
+  <button onclick="tab('tracking',this)">📦 Packages</button>
   <button onclick="tab('menu',this)">🍽️ Menu</button>
   <button onclick="tab('files',this)">📁 Files</button>
   <button onclick="tab('settings',this)">⚙️ Settings</button>
@@ -240,7 +250,32 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <div id="linkList"></div>
 </div>
 
-<!-- MENU -->
+<!-- TRACKING -->
+<div class="panel" id="p-tracking">
+  <div class="card">
+    <div class="slabel" style="margin-bottom:9px">Add Package</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input type="text" id="pkgName" placeholder="Description e.g. Blue sneakers from Amazon">
+      <input type="text" id="pkgNum" placeholder="Tracking number">
+      <div class="row">
+        <div><label>Carrier</label>
+          <select id="pkgCarrier">
+            <option value="usps">USPS</option>
+            <option value="ups">UPS</option>
+            <option value="fedex">FedEx</option>
+            <option value="amazon">Amazon</option>
+            <option value="dhl">DHL</option>
+            <option value="lasership">LaserShip</option>
+            <option value="ontrac">OnTrac</option>
+          </select>
+        </div>
+        <div><label>Expected by</label><input type="date" id="pkgDate" style="padding:9px 10px"></div>
+      </div>
+      <button class="btn pri sml" onclick="addPkg()" style="align-self:flex-start">+ Add Package</button>
+    </div>
+  </div>
+  <div id="pkgList"></div>
+</div>
 <div class="panel" id="p-menu">
   <div class="card">
     <div class="slabel" style="margin-bottom:9px">Weekly Lunch Menu</div>
@@ -329,10 +364,19 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 <script>
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const SCOPES='https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/calendar.readonly';
-const TAG_CSS={work:'ltag-work',ref:'ltag-ref',tool:'ltag-tool',social:'ltag-social',other:'ltag-other'};
+const CARRIERS={
+  usps:{name:'USPS',url:'https://tools.usps.com/go/TrackConfirmAction?tLabels='},
+  ups:{name:'UPS',url:'https://www.ups.com/track?tracknum='},
+  fedex:{name:'FedEx',url:'https://www.fedex.com/fedextrack/?trknbr='},
+  amazon:{name:'Amazon',url:'https://track.amazon.com/tracking/'},
+  dhl:{name:'DHL',url:'https://www.dhl.com/en/express/tracking.html?AWB='},
+  lasership:{name:'LaserShip',url:'https://www.lasership.com/track/'},
+  ontrac:{name:'OnTrac',url:'https://www.ontrac.com/tracking/?number='}
+};
+
 const TAG_LABEL={work:'💼 Work',ref:'📚 Reference',tool:'🔧 Tool',social:'🌐 Social',other:'📎 Other'};
 
-let S={apiKey:'',clientId:'',assistantName:'Chewey',customPrompt:'',tasks:[],links:[],menu:{},files:[],pinned:[],history:[]};
+let S={apiKey:'',clientId:'',assistantName:'Chewey',customPrompt:'',tasks:[],links:[],packages:[],menu:{},files:[],pinned:[],history:[]};
 let tokenClient=null,token=null,driveFiles=[],picked=new Set(),linkFilter='all';
 
 function save(){try{localStorage.setItem('chewey',JSON.stringify(S));}catch(e){}}
@@ -372,7 +416,7 @@ function updateDriveDot(on){
 function saveKey(){S.apiKey=document.getElementById('apiIn').value.trim();save();updateGeminiDot();flash('kSaved');}
 function saveCid(){S.clientId=document.getElementById('cidIn').value.trim();save();flash('cSaved');initGA();}
 function savePersonality(){S.assistantName=document.getElementById('aName').value||'Chewey';S.customPrompt=document.getElementById('aPrompt').value;save();alert('Saved!');}
-function clearAll(){if(!confirm('Clear all data?'))return;S.tasks=[];S.links=[];S.menu={};S.files=[];S.pinned=[];S.history=[];save();renderAll();renderDocSel();}
+function clearAll(){if(!confirm('Clear all data?'))return;S.tasks=[];S.links=[];S.packages=[];S.menu={};S.files=[];S.pinned=[];S.history=[];save();renderAll();renderDocSel();}
 function flash(id){var el=document.getElementById(id);el.style.display='inline';setTimeout(function(){el.style.display='none';},2000);}
 
 // Google Auth
@@ -569,7 +613,45 @@ function renderLinks(){
   }).join('');
 }
 
-// Menu
+// Packages
+function addPkg(){
+  var name=document.getElementById('pkgName').value.trim();
+  var num=document.getElementById('pkgNum').value.trim();
+  if(!name||!num)return;
+  S.packages.unshift({id:Date.now(),name,num,carrier:document.getElementById('pkgCarrier').value,date:document.getElementById('pkgDate').value,delivered:false});
+  document.getElementById('pkgName').value='';document.getElementById('pkgNum').value='';document.getElementById('pkgDate').value='';
+  save();renderPkgs();
+}
+function toggleDelivered(id){var p=S.packages.find(function(p){return p.id===id;});if(p){p.delivered=!p.delivered;save();renderPkgs();}}
+function delPkg(id){S.packages=S.packages.filter(function(p){return p.id!==id;});save();renderPkgs();}
+function trackPkg(num,carrier){var c=CARRIERS[carrier];if(c)window.open(c.url+encodeURIComponent(num),'_blank');}
+function renderPkgs(){
+  var el=document.getElementById('pkgList');
+  if(!S.packages.length){el.innerHTML='<div class="empty">No packages yet.<br>Add a tracking number above.</div>';return;}
+  var active=S.packages.filter(function(p){return!p.delivered;});
+  var done=S.packages.filter(function(p){return p.delivered;});
+  var html='';
+  if(active.length)html+='<div class="slabel" style="margin-top:4px">In Transit</div>'+active.map(pkgHTML).join('');
+  if(done.length)html+='<div class="slabel" style="margin-top:8px">Delivered</div>'+done.map(pkgHTML).join('');
+  el.innerHTML=html;
+}
+function pkgHTML(p){
+  var c=CARRIERS[p.carrier]||{name:p.carrier};
+  var today=new Date().toISOString().slice(0,10);
+  var overdue=p.date&&p.date<today&&!p.delivered;
+  return '<div class="pkgcard'+(p.delivered?' pkg-delivered':'')+'">'
+    +'<div class="pkgicon">📦</div>'
+    +'<div class="pkginfo">'
+    +'<div class="pkgname">'+esc(p.name)+'</div>'
+    +'<div class="pkgmeta">'+c.name+(p.date?' · '+(overdue?'<span style="color:var(--danger)">Expected '+p.date+'</span>':'Expected '+p.date):'')+'</div>'
+    +'<div class="pkgnum">'+esc(p.num)+'</div>'
+    +'<div class="pkgactions">'
+    +'<button class="btn pri sml" onclick="trackPkg(\''+esc(p.num)+'\',\''+p.carrier+'\')">🔍 Track</button>'
+    +'<button class="btn gho sml" onclick="toggleDelivered('+p.id+')">'+(p.delivered?'↩ Unmark':'✓ Delivered')+'</button>'
+    +'<button class="btn dan sml" onclick="delPkg('+p.id+')">✕</button>'
+    +'</div></div></div>';
+}
+
 function addMenu(){var m=document.getElementById('mMeal').value.trim();if(!m)return;S.menu[document.getElementById('mDay').value]=m;document.getElementById('mMeal').value='';save();renderMenu();}
 async function genMenu(){
   if(!S.apiKey){alert('Add Gemini API key in Settings.');return;}
@@ -589,7 +671,7 @@ function addFile(){var n=document.getElementById('fName').value.trim();if(!n)ret
 function delFile(id){S.files=S.files.filter(function(f){return f.id!==id;});save();renderFiles();}
 function renderFiles(){var el=document.getElementById('fileList');if(!S.files.length){el.innerHTML='<div class="empty">No files tracked yet.</div>';return;}el.innerHTML=S.files.map(function(f){return'<div class="fcard"><div class="fi">'+f.icon+'</div><div style="flex:1"><div class="fn">'+esc(f.name)+'</div>'+(f.note?'<div class="fm">'+esc(f.note)+'</div>':'')+'<div class="fm">Added '+f.date+'</div></div><button class="btn dan sml" onclick="delFile('+f.id+')">✕</button></div>';}).join('');}
 
-function renderAll(){renderTasks();renderLinks();renderMenu();renderFiles();renderPinned();renderDocSel();}
+function renderAll(){renderTasks();renderLinks();renderPkgs();renderMenu();renderFiles();renderPinned();renderDocSel();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 </body>
