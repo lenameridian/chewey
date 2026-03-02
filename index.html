@@ -442,9 +442,15 @@ async function openPicker() {
   selectedInModal.clear();
   try {
     driveFiles = await fetchDriveFiles();
-    renderDriveList(driveFiles);
+    if (!driveFiles.length) {
+      document.getElementById('driveList').innerHTML = '<div class="empty">No Google Docs found in your Drive.<br><br>Make sure you have at least one Google Doc (not just Sheets or other file types) and that you're signed into the correct Google account.</div>';
+    } else {
+      renderDriveList(driveFiles);
+    }
   } catch(e) {
-    document.getElementById('driveList').innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+    console.error('Drive error:', e);
+    document.getElementById('driveList').innerHTML = `<div class="empty">⚠️ Error: ${e.message}<br><br>Try signing out and signing back in.</div>`;
+    alert('Drive error: ' + e.message);
   }
 }
 
