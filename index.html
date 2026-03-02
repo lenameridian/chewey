@@ -16,87 +16,97 @@
   --r:14px;
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden}
-/* Header */
 #hdr{background:var(--accent);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e0a0b8;flex-shrink:0}
 #hdr h1{font-size:1.05rem;font-weight:700;color:#fff}
 .badges{display:flex;gap:10px}
-.badge{display:flex;align-items:center;gap:5px;font-size:0.71rem;color:var(--text2)}
-.dot{width:7px;height:7px;border-radius:50%;background:#444;flex-shrink:0}
+.badge{display:flex;align-items:center;gap:5px;font-size:0.71rem;color:#ffffffaa}
+.dot{width:7px;height:7px;border-radius:50%;background:#ffffff44;flex-shrink:0}
 .dot.on{background:var(--ok);box-shadow:0 0 5px var(--ok)}
-.dot.gon{background:var(--google);box-shadow:0 0 5px var(--google)}
-/* Nav */
+.dot.gon{background:#fff;box-shadow:0 0 5px #fff}
 #nav{background:var(--surf);display:flex;border-bottom:2px solid #f5c0d5;flex-shrink:0;overflow-x:auto}
 #nav::-webkit-scrollbar{display:none}
-#nav button{flex:1;min-width:65px;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font-size:0.72rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+#nav button{flex:1;min-width:60px;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font-size:0.7rem;cursor:pointer;white-space:nowrap;transition:all .2s}
 #nav button.on{color:var(--accent);border-bottom-color:var(--accent)}
-/* Panels */
 #panels{flex:1;overflow:hidden;position:relative}
 .panel{display:none;flex-direction:column;gap:11px;padding:14px;height:100%;overflow-y:auto}
 .panel.on{display:flex}
-/* Cards */
-.card{background:var(--surf);border-radius:var(--r);padding:15px 16px;border:1px solid #fff1}
+.card{background:var(--surf);border-radius:var(--r);padding:15px 16px;border:1px solid #f5c0d5}
 .card.hi{border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
 .card.gc{border-color:color-mix(in srgb,var(--google) 40%,transparent)}
-.card h2{font-size:.93rem;color:var(--accent2);margin-bottom:7px}
+.card h2{font-size:.93rem;color:var(--accent);margin-bottom:7px}
 .card p,.card li{font-size:.82rem;color:var(--text2);line-height:1.65}
 .card ol{margin-left:16px}
-code{background:var(--surf2);padding:1px 6px;border-radius:5px;font-size:.79rem;color:var(--accent2);font-family:monospace}
-/* Form elements */
-input,textarea,select{width:100%;padding:10px 12px;background:var(--surf2);border:1px solid #fff1;border-radius:10px;color:var(--text);font-size:.85rem;outline:none;font-family:inherit;transition:border .2s}
+code{background:var(--surf2);padding:1px 6px;border-radius:5px;font-size:.79rem;color:var(--accent);font-family:monospace}
+input,textarea,select{width:100%;padding:10px 12px;background:var(--surf2);border:1px solid #f5c0d5;border-radius:10px;color:var(--text);font-size:.85rem;outline:none;font-family:inherit;transition:border .2s}
 input:focus,textarea:focus,select:focus{border-color:var(--accent)}
 textarea{resize:vertical}
 label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 .row{display:flex;gap:8px}
 .row>*{flex:1}
 .slabel{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2)}
-/* Buttons */
 .btn{padding:9px 14px;border-radius:10px;border:none;cursor:pointer;font-size:.84rem;font-weight:600;transition:opacity .2s}
 .btn:hover{opacity:.85}
 .btn.pri{background:var(--accent);color:#fff}
 .btn.goo{background:var(--google);color:#fff;display:flex;align-items:center;gap:7px}
 .btn.sml{padding:6px 12px;font-size:.78rem}
-.btn.dan{background:color-mix(in srgb,var(--danger) 18%,transparent);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 35%,transparent)}
-.btn.gho{background:var(--surf2);color:var(--text2)}
+.btn.dan{background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent)}
+.btn.gho{background:var(--surf2);color:var(--text2);border:1px solid #f5c0d5}
 .empty{text-align:center;color:var(--text2);font-size:.85rem;padding:24px 14px;line-height:1.6}
 /* Chat */
 #chatMsgs{flex:1;display:flex;flex-direction:column;gap:9px;overflow-y:auto;min-height:100px}
 .msg{max-width:88%;padding:10px 13px;border-radius:15px;font-size:.85rem;line-height:1.55}
 .msg.u{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.msg.a{background:var(--surf);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;white-space:pre-wrap}
+.msg.a{background:var(--surf);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;white-space:pre-wrap;border:1px solid #f5c0d5}
 .msg.th{color:var(--text2);font-style:italic}
-.refbar{background:var(--surf2);border-radius:9px;padding:7px 11px;font-size:.76rem;color:var(--text2);border:1px solid #fff1;display:flex;align-items:center;justify-content:space-between}
-.refbar span{color:var(--accent2);font-weight:600}
-/* Drive */
-.doccard{background:var(--surf);border-radius:var(--r);padding:12px 14px;border:1px solid #fff1;display:flex;align-items:center;gap:11px}
-.doccard .di{font-size:1.3rem;flex-shrink:0}
-.doccard .dn{font-size:.87rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.doccard .dm{font-size:.72rem;color:var(--text2);margin-top:2px}
+.refbar{background:var(--surf2);border-radius:9px;padding:7px 11px;font-size:.76rem;color:var(--text2);border:1px solid #f5c0d5;display:flex;align-items:center;justify-content:space-between}
+.refbar span{color:var(--accent);font-weight:600}
 /* Tasks */
-.tcard{background:var(--surf);border-radius:var(--r);padding:11px 13px;display:flex;align-items:flex-start;gap:9px;border:1px solid #fff1}
-.tcard.done{opacity:.42}
+.tcard{background:var(--surf);border-radius:var(--r);padding:12px 14px;border:1px solid #f5c0d5}
+.tcard.done{opacity:.45}
+.thead{display:flex;align-items:flex-start;gap:9px}
 .tcard input[type=checkbox]{margin-top:3px;width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
 .ttitle{font-size:.86rem;font-weight:500}
 .tcard.done .ttitle{text-decoration:line-through}
 .tmeta{font-size:.71rem;color:var(--text2);margin-top:2px}
+.tnotes{font-size:.8rem;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid #f5c0d5;white-space:pre-wrap;line-height:1.5}
+.texpand{font-size:.72rem;color:var(--accent);cursor:pointer;background:none;border:none;padding:4px 0;margin-top:4px}
+/* Links */
+.lcard{background:var(--surf);border-radius:var(--r);padding:13px 15px;border:1px solid #f5c0d5;display:flex;align-items:flex-start;gap:11px}
+.licon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.linfo{flex:1;min-width:0}
+.lname{font-size:.88rem;font-weight:600}
+.ldesc{font-size:.76rem;color:var(--text2);margin-top:2px}
+.lurl{font-size:.75rem;color:var(--accent);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;text-decoration:none;display:block}
+.ltag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.69rem;font-weight:600;margin-top:4px}
+.ltag-work{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+.ltag-ref{background:#4285f420;color:#4285f4}
+.ltag-social{background:#4ade8020;color:#16a34a}
+.ltag-tool{background:#fbbf2420;color:#b45309}
+.ltag-other{background:#e2e8f0;color:#64748b}
+/* Drive */
+.doccard{background:var(--surf);border-radius:var(--r);padding:12px 14px;border:1px solid #f5c0d5;display:flex;align-items:center;gap:11px}
+.doccard .di{font-size:1.3rem;flex-shrink:0}
+.doccard .dn{font-size:.87rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doccard .dm{font-size:.72rem;color:var(--text2);margin-top:2px}
 /* Menu */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 @media(min-width:520px){.mgrid{grid-template-columns:repeat(4,1fr)}}
-.dcard{background:var(--surf);border-radius:var(--r);padding:11px;border:1px solid #fff1}
-.dcard h3{font-size:.72rem;color:var(--accent2);margin-bottom:4px}
+.dcard{background:var(--surf);border-radius:var(--r);padding:11px;border:1px solid #f5c0d5}
+.dcard h3{font-size:.72rem;color:var(--accent);margin-bottom:4px}
 .dcard p{font-size:.78rem;color:var(--text2)}
 /* Files */
-.fcard{background:var(--surf);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;border:1px solid #fff1}
+.fcard{background:var(--surf);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;border:1px solid #f5c0d5}
 .fi{font-size:1.3rem}
 .fn{font-size:.86rem;font-weight:500}
 .fm{font-size:.71rem;color:var(--text2);margin-top:2px}
 /* Modal */
 .overlay{position:fixed;inset:0;background:#0008;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--surf);border-radius:var(--r);padding:18px;width:100%;max-width:460px;max-height:78vh;display:flex;flex-direction:column;gap:11px;border:1px solid color-mix(in srgb,var(--google) 40%,transparent)}
-.modal h2{font-size:.93rem;color:var(--accent2)}
+.modal{background:var(--surf);border-radius:var(--r);padding:18px;width:100%;max-width:460px;max-height:78vh;display:flex;flex-direction:column;gap:11px;border:1px solid #f5c0d5}
+.modal h2{font-size:.93rem;color:var(--accent)}
 .mlist{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
 .pitem{background:var(--surf2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;border:1px solid transparent;transition:border .15s}
 .pitem:hover{border-color:var(--google)}
-.pitem.sel{border-color:var(--google);background:color-mix(in srgb,var(--google) 12%,transparent)}
+.pitem.sel{border-color:var(--google);background:color-mix(in srgb,var(--google) 10%,transparent)}
 .pname{font-size:.85rem;font-weight:500;flex:1}
 .pmeta{font-size:.71rem;color:var(--text2)}
 </style>
@@ -115,6 +125,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <button class="on" onclick="tab('chat',this)">💬 Chat</button>
   <button onclick="tab('drive',this)">☁️ Drive</button>
   <button onclick="tab('tasks',this)">✅ Tasks</button>
+  <button onclick="tab('links',this)">🔗 Links</button>
   <button onclick="tab('menu',this)">🍽️ Menu</button>
   <button onclick="tab('files',this)">📁 Files</button>
   <button onclick="tab('settings',this)">⚙️ Settings</button>
@@ -126,7 +137,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 <div class="panel on" id="p-chat">
   <div id="chatWarn" class="card hi" style="display:none">
     <h2>🔑 Setup needed</h2>
-    <p>Add your Gemini API key in <b>Settings</b>. To use Drive docs, also connect in the <b>Drive</b> tab.</p>
+    <p>Add your Gemini API key in <b>Settings</b>. To use Drive docs, connect in the <b>Drive</b> tab.</p>
   </div>
   <div id="chatMsgs">
     <div class="msg a">Hi! I'm Chewey, your personal assistant. Connect Google Drive in the Drive tab so I can reference your live documents. What can I help you with?</div>
@@ -134,7 +145,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <div style="display:flex;flex-direction:column;gap:7px;flex-shrink:0">
     <div id="refBar" class="refbar" style="display:none">
       <div>📄 Using: <span id="refName"></span></div>
-      <button class="btn gho sml" onclick="clearRef()">✕</button>
+      <button class="btn gho sml" onclick="clearRef()" style="padding:3px 8px;font-size:.72rem">✕</button>
     </div>
     <div style="display:flex;gap:7px;align-items:center">
       <span style="font-size:.76rem;color:var(--text2);white-space:nowrap">📄 Doc:</span>
@@ -153,7 +164,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 <div class="panel" id="p-drive">
   <div class="card gc">
     <h2>☁️ Google Drive</h2>
-    <p style="margin-bottom:12px">Sign in to browse and pin your Google Docs. The assistant will fetch them live when you chat.</p>
+    <p style="margin-bottom:12px">Sign in to browse and pin your Google Docs. The assistant fetches them live when you chat.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn goo sml" id="signInBtn" onclick="gSignIn()">
         <svg width="15" height="15" viewBox="0 0 48 48"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
@@ -168,7 +179,7 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
         <div class="slabel">Pinned Documents</div>
         <div style="font-size:.79rem;color:var(--text2);margin-top:3px">Select in Chat to reference live.</div>
       </div>
-      <button class="btn goo sml" onclick="openPicker()">+ Browse Drive</button>
+      <button class="btn pri sml" onclick="openPicker()">+ Browse Drive</button>
     </div>
     <div id="pinnedList"></div>
   </div>
@@ -180,17 +191,53 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   <div class="card">
     <div class="slabel" style="margin-bottom:9px">Add Task / Reminder</div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <input type="text" id="tIn" placeholder="Task or item to order…">
+      <input type="text" id="tIn" placeholder="Task title…">
+      <textarea id="tNotes" placeholder="Notes (optional)…" rows="2"></textarea>
       <div class="row">
         <div><label>Category</label>
-          <select id="tCat"><option value="task">Task</option><option value="order">🛒 Order</option><option value="menu">🍽️ Menu</option><option value="file">📁 File</option><option value="school">🎓 School</option><option value="filming">🎬 Filming</option></select>
+          <select id="tCat">
+            <option value="task">Task</option>
+            <option value="order">🛒 Order</option>
+            <option value="menu">🍽️ Menu</option>
+            <option value="file">📁 File</option>
+            <option value="school">🎓 School</option>
+            <option value="filming">🎬 Filming</option>
+          </select>
         </div>
         <div><label>Due date</label><input type="date" id="tDate" style="padding:9px 10px"></div>
       </div>
-      <button class="btn pri sml" onclick="addTask()" style="align-self:flex-start">+ Add</button>
+      <button class="btn pri sml" onclick="addTask()" style="align-self:flex-start">+ Add Task</button>
     </div>
   </div>
   <div id="taskList"></div>
+</div>
+
+<!-- LINKS -->
+<div class="panel" id="p-links">
+  <div class="card">
+    <div class="slabel" style="margin-bottom:9px">Save a Link</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input type="text" id="lName" placeholder="Title e.g. Brand Guidelines">
+      <input type="text" id="lUrl" placeholder="URL e.g. https://…">
+      <textarea id="lDesc" placeholder="Description or notes (optional)…" rows="2"></textarea>
+      <div class="row">
+        <div><label>Category</label>
+          <select id="lTag">
+            <option value="work">💼 Work</option>
+            <option value="ref">📚 Reference</option>
+            <option value="tool">🔧 Tool</option>
+            <option value="social">🌐 Social</option>
+            <option value="other">📎 Other</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn pri sml" onclick="addLink()" style="width:100%">+ Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap" id="linkFilters"></div>
+  <div id="linkList"></div>
 </div>
 
 <!-- MENU -->
@@ -250,20 +297,6 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
     </div>
   </div>
   <div class="card">
-    <h2>📋 Google Cloud Setup</h2>
-    <ol style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
-      <li>Go to <code>console.cloud.google.com</code></li>
-      <li><b>New Project</b> → create it</li>
-      <li><b>APIs & Services → Library</b> → enable <b>Google Drive API</b> and <b>Google Docs API</b></li>
-      <li><b>OAuth consent screen</b> → External → fill in name & email → Save</li>
-      <li>Add yourself under <b>Test users</b></li>
-      <li><b>Credentials → + Create Credentials → OAuth client ID</b></li>
-      <li>Type: <b>Web application</b></li>
-      <li>Authorized JS origins: <code id="originHint">loading…</code></li>
-      <li>Copy the <b>Client ID</b> and paste above</li>
-    </ol>
-  </div>
-  <div class="card">
     <h2>🤖 Assistant Preferences</h2>
     <input type="text" id="aName" placeholder="Assistant name e.g. Chewey" style="margin-bottom:9px">
     <textarea id="aPrompt" placeholder="Custom instructions e.g. I work in marketing. Be concise." rows="3"></textarea>
@@ -272,12 +305,12 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
   </div>
   <div class="card">
     <h2>🗑️ Clear All Data</h2>
-    <p>Removes all tasks, menus, and files from this device.</p><br>
+    <p>Removes all tasks, links, menus, and files from this device.</p><br>
     <button class="btn dan sml" onclick="clearAll()">Clear Everything</button>
   </div>
 </div>
 
-</div><!-- /panels -->
+</div>
 
 <!-- Drive Picker Modal -->
 <div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
@@ -296,32 +329,30 @@ label{font-size:.74rem;color:var(--text2);margin-bottom:3px;display:block}
 <script>
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const SCOPES='https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/calendar.readonly';
+const TAG_CSS={work:'ltag-work',ref:'ltag-ref',tool:'ltag-tool',social:'ltag-social',other:'ltag-other'};
+const TAG_LABEL={work:'💼 Work',ref:'📚 Reference',tool:'🔧 Tool',social:'🌐 Social',other:'📎 Other'};
 
-let S={apiKey:'',clientId:'',assistantName:'Chewey',customPrompt:'',tasks:[],menu:{},files:[],pinned:[],history:[]};
-let tokenClient=null, token=null, driveFiles=[], picked=new Set();
+let S={apiKey:'',clientId:'',assistantName:'Chewey',customPrompt:'',tasks:[],links:[],menu:{},files:[],pinned:[],history:[]};
+let tokenClient=null,token=null,driveFiles=[],picked=new Set(),linkFilter='all';
 
-// Persist
 function save(){try{localStorage.setItem('chewey',JSON.stringify(S));}catch(e){}}
-function load(){try{const d=JSON.parse(localStorage.getItem('chewey')||'{}');Object.assign(S,d);}catch(e){}}
+function load(){try{var d=JSON.parse(localStorage.getItem('chewey')||'{}');Object.assign(S,d);}catch(e){}}
 
 load();
-document.getElementById('originHint').textContent=location.origin;
-if(S.apiKey)document.getElementById('apiIn').value=S.apiKey;
-if(S.clientId)document.getElementById('cidIn').value=S.clientId;
+document.getElementById('apiIn').value=S.apiKey||'';
+document.getElementById('cidIn').value=S.clientId||'';
 document.getElementById('aName').value=S.assistantName||'';
 document.getElementById('aPrompt').value=S.customPrompt||'';
 updateGeminiDot();
 renderAll();
 
-// Tab switching
-function tab(id, btn) {
+function tab(id,btn){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   document.querySelectorAll('#nav button').forEach(function(b){b.classList.remove('on');});
   document.getElementById('p-'+id).classList.add('on');
   btn.classList.add('on');
 }
 
-// Status dots
 function updateGeminiDot(){
   var on=!!S.apiKey;
   document.getElementById('gDot').className='dot'+(on?' on':'');
@@ -338,109 +369,65 @@ function updateDriveDot(on){
   if(on)renderPinned();
 }
 
-// Settings
 function saveKey(){S.apiKey=document.getElementById('apiIn').value.trim();save();updateGeminiDot();flash('kSaved');}
 function saveCid(){S.clientId=document.getElementById('cidIn').value.trim();save();flash('cSaved');initGA();}
 function savePersonality(){S.assistantName=document.getElementById('aName').value||'Chewey';S.customPrompt=document.getElementById('aPrompt').value;save();alert('Saved!');}
-function clearAll(){if(!confirm('Clear all data?'))return;S.tasks=[];S.menu={};S.files=[];S.pinned=[];S.history=[];save();renderAll();renderDocSel();}
+function clearAll(){if(!confirm('Clear all data?'))return;S.tasks=[];S.links=[];S.menu={};S.files=[];S.pinned=[];S.history=[];save();renderAll();renderDocSel();}
 function flash(id){var el=document.getElementById(id);el.style.display='inline';setTimeout(function(){el.style.display='none';},2000);}
 
 // Google Auth
 function initGA(){
   if(!window.google||!window.google.accounts||!S.clientId)return;
   tokenClient=google.accounts.oauth2.initTokenClient({
-    client_id:S.clientId,
-    scope:SCOPES,
+    client_id:S.clientId,scope:SCOPES,
     callback:function(r){
-      if(r.error){
-        // Only alert if it's not a silent re-auth failure
-        if(r.error!=='interaction_required'&&r.error!=='consent_required') alert('Sign-in error: '+r.error);
-        return;
-      }
-      token=r.access_token;
-      updateDriveDot(true);
+      if(r.error){if(r.error!=='interaction_required'&&r.error!=='consent_required')alert('Sign-in error: '+r.error);return;}
+      token=r.access_token;updateDriveDot(true);
     }
   });
 }
-function gSignIn(){
-  if(!S.clientId){alert('Save your Client ID in Settings first.');return;}
-  if(!window.google||!window.google.accounts){alert('Google library still loading, please wait a moment.');return;}
-  if(!tokenClient)initGA();
-  if(!tokenClient){alert('Could not initialize. Check your Client ID.');return;}
-  tokenClient.requestAccessToken({prompt:'consent'});
-}
-function gSignOut(){if(token)google.accounts.oauth2.revoke(token);token=null;updateDriveDot(false);}
-
-// Wait for GSI then init
 function tryInitGA(n){
-  if(window.google&&window.google.accounts){
-    if(S.clientId){
-      initGA();
-      // Attempt silent sign-in on load
-      if(S.clientId) silentSignIn();
-    }
-  } else if(n<30) setTimeout(function(){tryInitGA(n+1);},300);
+  if(window.google&&window.google.accounts){if(S.clientId){initGA();silentSignIn();}}
+  else if(n<30)setTimeout(function(){tryInitGA(n+1);},300);
 }
 tryInitGA(0);
+function silentSignIn(){if(!S.clientId||!window.google||!window.google.accounts)return;if(!tokenClient)initGA();if(!tokenClient)return;tokenClient.requestAccessToken({prompt:''});}
+setInterval(function(){if(token&&S.clientId)silentSignIn();},45*60*1000);
+function gSignIn(){if(!S.clientId){alert('Save your Client ID in Settings first.');return;}if(!window.google||!window.google.accounts){alert('Google library still loading, please wait.');return;}if(!tokenClient)initGA();if(!tokenClient){alert('Could not initialize. Check your Client ID.');return;}tokenClient.requestAccessToken({prompt:'consent'});}
+function gSignOut(){if(token)google.accounts.oauth2.revoke(token);token=null;updateDriveDot(false);}
 
-function silentSignIn(){
-  if(!S.clientId||!window.google||!window.google.accounts) return;
-  if(!tokenClient) initGA();
-  if(!tokenClient) return;
-  tokenClient.requestAccessToken({prompt:''});
-}
-
-// Refresh token every 45 minutes (tokens last 1 hour)
-setInterval(function(){
-  if(token && S.clientId) silentSignIn();
-}, 45*60*1000);
-
-// Drive API
+// Drive
 async function fetchDocs(){
   var p=new URLSearchParams({q:'mimeType="application/vnd.google-apps.document" and trashed=false',fields:'files(id,name,modifiedTime)',pageSize:'50',orderBy:'modifiedTime desc',includeItemsFromAllDrives:'true',supportsAllDrives:'true',corpora:'allDrives'});
   var r=await fetch('https://www.googleapis.com/drive/v3/files?'+p,{headers:{Authorization:'Bearer '+token}});
-  var d=await r.json();
-  if(d.error)throw new Error(d.error.message);
-  return d.files||[];
+  var d=await r.json();if(d.error)throw new Error(d.error.message);return d.files||[];
 }
 async function fetchContent(id){
   var r=await fetch('https://www.googleapis.com/drive/v3/files/'+id+'/export?mimeType=text/plain&supportsAllDrives=true',{headers:{Authorization:'Bearer '+token}});
-  if(!r.ok)throw new Error('Could not read doc (status '+r.status+')');
-  return await r.text();
+  if(!r.ok)throw new Error('Could not read doc (status '+r.status+')');return await r.text();
 }
-
-// Picker
 async function openPicker(){
   if(!token){alert('Sign in to Google Drive first.');return;}
   document.getElementById('modal').style.display='flex';
-  document.getElementById('drList').innerHTML='<div class="empty">Loading your docs…</div>';
+  document.getElementById('drList').innerHTML='<div class="empty">Loading…</div>';
   picked.clear();
-  try{
-    driveFiles=await fetchDocs();
-    renderDriveList(driveFiles);
-  }catch(e){
-    document.getElementById('drList').innerHTML='<div class="empty">⚠️ '+esc(e.message)+'</div>';
-  }
+  try{driveFiles=await fetchDocs();renderDriveList(driveFiles);}
+  catch(e){document.getElementById('drList').innerHTML='<div class="empty">⚠️ '+esc(e.message)+'</div>';}
 }
 function renderDriveList(files){
-  if(!files.length){document.getElementById('drList').innerHTML='<div class="empty">No Google Docs found.<br>Make sure you have Docs (not just Sheets/PDFs) in your Drive.</div>';return;}
+  if(!files.length){document.getElementById('drList').innerHTML='<div class="empty">No Google Docs found.</div>';return;}
   document.getElementById('drList').innerHTML=files.map(function(f){
     var mod=new Date(f.modifiedTime).toLocaleDateString();
-    var sel=picked.has(f.id);
     var already=S.pinned.find(function(p){return p.id===f.id;});
+    var sel=picked.has(f.id);
     return '<div class="pitem'+(sel?' sel':'')+'" id="pi-'+f.id+'" onclick="togglePick(\''+f.id+'\')">'
       +'<span style="font-size:1.2rem">📄</span>'
       +'<div style="flex:1;min-width:0"><div class="pname">'+esc(f.name)+'</div>'
-      +'<div class="pmeta">Modified '+mod+(already?' · ✓ Pinned':'')+'</div></div>'
-      +'</div>';
+      +'<div class="pmeta">Modified '+mod+(already?' · ✓ Pinned':'')+'</div></div></div>';
   }).join('');
 }
 function filterDrive(){var q=document.getElementById('drSearch').value.toLowerCase();renderDriveList(driveFiles.filter(function(f){return f.name.toLowerCase().includes(q);}));}
-function togglePick(id){
-  if(picked.has(id))picked.delete(id);else picked.add(id);
-  var el=document.getElementById('pi-'+id);
-  if(el)el.classList.toggle('sel',picked.has(id));
-}
+function togglePick(id){if(picked.has(id))picked.delete(id);else picked.add(id);var el=document.getElementById('pi-'+id);if(el)el.classList.toggle('sel',picked.has(id));}
 function pinSelected(){
   picked.forEach(function(id){
     if(!S.pinned.find(function(p){return p.id===id;})){
@@ -452,7 +439,6 @@ function pinSelected(){
 }
 function unpin(id){S.pinned=S.pinned.filter(function(d){return d.id!==id;});save();renderPinned();renderDocSel();}
 function closeModal(){document.getElementById('modal').style.display='none';}
-
 function renderPinned(){
   var el=document.getElementById('pinnedList');
   if(!S.pinned.length){el.innerHTML='<div class="empty">No docs pinned yet.<br>Click "Browse Drive" to add some.</div>';return;}
@@ -463,71 +449,65 @@ function renderPinned(){
       +'<button class="btn dan sml" onclick="unpin(\''+d.id+'\')">Unpin</button></div>';
   }).join('');
 }
-
 function renderDocSel(){
-  var sel=document.getElementById('docSel');
-  var cur=sel.value;
-  sel.innerHTML='<option value="">— None —</option>'+S.pinned.map(function(d){return '<option value="'+d.id+'">'+esc(d.name)+'</option>';}).join('');
+  var sel=document.getElementById('docSel');var cur=sel.value;
+  sel.innerHTML='<option value="">— None —</option>'+S.pinned.map(function(d){return'<option value="'+d.id+'">'+esc(d.name)+'</option>';}).join('');
   if([].slice.call(sel.options).find(function(o){return o.value===cur;}))sel.value=cur;
   onDocSel();
 }
 function onDocSel(){
-  var id=document.getElementById('docSel').value;
-  var bar=document.getElementById('refBar');
+  var id=document.getElementById('docSel').value;var bar=document.getElementById('refBar');
   if(!id){bar.style.display='none';return;}
   var doc=S.pinned.find(function(d){return d.id===id;});
-  bar.style.display='flex';
-  document.getElementById('refName').textContent=doc?doc.name:id;
+  bar.style.display='flex';document.getElementById('refName').textContent=doc?doc.name:id;
 }
 function clearRef(){document.getElementById('docSel').value='';onDocSel();}
 
 // Chat
 async function send(){
-  var input=document.getElementById('chatIn');
-  var msg=input.value.trim();
-  if(!msg)return;
-  if(!S.apiKey){alert('Add your Gemini API key in Settings.');return;}
-  input.value='';
-  addMsg('u',msg);
-  var th=addMsg('a','Thinking…',true);
-  var docCtx='';
-  var selId=document.getElementById('docSel').value;
+  var input=document.getElementById('chatIn');var msg=input.value.trim();
+  if(!msg)return;if(!S.apiKey){alert('Add your Gemini API key in Settings.');return;}
+  input.value='';addMsg('u',msg);var th=addMsg('a','Thinking…',true);
+  var docCtx='';var selId=document.getElementById('docSel').value;
   if(selId){
-    if(!token){th.remove();addMsg('a','⚠️ Please sign in to Google Drive first (Drive tab).');return;}
+    if(!token){th.remove();addMsg('a','⚠️ Please sign in to Google Drive first.');return;}
     var doc=S.pinned.find(function(d){return d.id===selId;});
     th.textContent='Reading "'+((doc&&doc.name)||'document')+'" from Drive…';
     try{var content=await fetchContent(selId);docCtx='\n\n---\nLIVE DOCUMENT: "'+(doc?doc.name:selId)+'"\n'+content.slice(0,12000)+'\n---\nAnswer using this document.';}
     catch(e){th.remove();addMsg('a','⚠️ Could not read doc: '+e.message);return;}
     th.textContent='Thinking…';
   }
-  var tasks=S.tasks.filter(function(t){return!t.done;}).map(function(t){return'- ['+t.cat+'] '+t.title+(t.date?' (due '+t.date+')':'');}).join('\n')||'None';
+  var tasks=S.tasks.filter(function(t){return!t.done;}).map(function(t){return'- ['+t.cat+'] '+t.title+(t.date?' (due '+t.date+')':'')+(t.notes?' - '+t.notes:'');}).join('\n')||'None';
   var menuS=DAYS.map(function(d){return S.menu[d]?d+': '+S.menu[d]:'';}).filter(Boolean).join(', ')||'Not set';
   var sys='You are '+(S.assistantName||'Chewey')+', a helpful personal assistant.\nPending tasks: '+tasks+'\nLunch menu: '+menuS+'\n'+(S.customPrompt?'User prefs: '+S.customPrompt:'')+docCtx+'\nBe concise and practical.';
   S.history.push({role:'user',parts:[{text:msg}]});
   try{
-    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:S.history,generationConfig:{maxOutputTokens:1200,temperature:0.7}})});
-    var data=await res.json();
-    if(data.error)throw new Error(data.error.message);
-    var reply=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:'No response.';
+    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:S.history,generationConfig:{maxOutputTokens:1200,temperature:0.7}})});
+    var data=await res.json();if(data.error)throw new Error(data.error.message);
+    var reply=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:'No response.';
     th.remove();addMsg('a',reply);
     S.history.push({role:'model',parts:[{text:reply}]});
-    if(S.history.length>24)S.history=S.history.slice(-24);
-    save();
+    if(S.history.length>24)S.history=S.history.slice(-24);save();
   }catch(e){th.remove();addMsg('a','⚠️ Error: '+e.message);}
 }
 function addMsg(role,text,th){
-  var div=document.createElement('div');
-  div.className='msg '+role+(th?' th':'');
-  div.textContent=text;
-  var c=document.getElementById('chatMsgs');
-  c.appendChild(div);c.scrollTop=c.scrollHeight;
-  return div;
+  var div=document.createElement('div');div.className='msg '+role+(th?' th':'');div.textContent=text;
+  var c=document.getElementById('chatMsgs');c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
 }
 
 // Tasks
-function addTask(){var t=document.getElementById('tIn').value.trim();if(!t)return;S.tasks.unshift({id:Date.now(),title:t,cat:document.getElementById('tCat').value,date:document.getElementById('tDate').value,done:false});document.getElementById('tIn').value='';document.getElementById('tDate').value='';save();renderTasks();}
+function addTask(){
+  var t=document.getElementById('tIn').value.trim();if(!t)return;
+  S.tasks.unshift({id:Date.now(),title:t,notes:document.getElementById('tNotes').value.trim(),cat:document.getElementById('tCat').value,date:document.getElementById('tDate').value,done:false,expanded:false});
+  document.getElementById('tIn').value='';document.getElementById('tNotes').value='';document.getElementById('tDate').value='';
+  save();renderTasks();
+}
 function toggleTask(id){var t=S.tasks.find(function(t){return t.id===id;});if(t){t.done=!t.done;save();renderTasks();}}
 function delTask(id){S.tasks=S.tasks.filter(function(t){return t.id!==id;});save();renderTasks();}
+function toggleNotes(id){
+  var t=S.tasks.find(function(t){return t.id===id;});if(!t)return;
+  t.expanded=!t.expanded;save();renderTasks();
+}
 function renderTasks(){
   var el=document.getElementById('taskList');
   if(!S.tasks.length){el.innerHTML='<div class="empty">No tasks yet.</div>';return;}
@@ -540,10 +520,52 @@ function renderTasks(){
   el.innerHTML=groups.filter(function(g){return g.items.length;}).map(function(g){
     return '<div class="slabel" style="margin-top:8px;color:'+(g.col||'var(--text2)')+'">'+g.label+'</div>'+
     g.items.map(function(t){
-      return '<div class="tcard'+(t.done?' done':'')+'"><input type="checkbox"'+(t.done?' checked':'')+' onchange="toggleTask('+t.id+')">'
-        +'<div style="flex:1"><div class="ttitle">'+esc(t.title)+'</div><div class="tmeta">'+t.cat+(t.date?' · 📅 '+t.date:'')+'</div></div>'
-        +'<button class="btn dan sml" onclick="delTask('+t.id+')">✕</button></div>';
+      return '<div class="tcard'+(t.done?' done':'')+'">'
+        +'<div class="thead"><input type="checkbox"'+(t.done?' checked':'')+' onchange="toggleTask('+t.id+')">'
+        +'<div style="flex:1"><div class="ttitle">'+esc(t.title)+'</div>'
+        +'<div class="tmeta">'+t.cat+(t.date?' · 📅 '+t.date:'')+'</div>'
+        +(t.notes?'<button class="texpand" onclick="toggleNotes('+t.id+')">'+(t.expanded?'▲ Hide notes':'▼ Show notes')+'</button>':'')
+        +'</div>'
+        +'<button class="btn dan sml" onclick="delTask('+t.id+')">✕</button></div>'
+        +(t.notes&&t.expanded?'<div class="tnotes">'+esc(t.notes)+'</div>':'')
+        +'</div>';
     }).join('');
+  }).join('');
+}
+
+// Links
+function addLink(){
+  var name=document.getElementById('lName').value.trim();
+  var url=document.getElementById('lUrl').value.trim();
+  if(!name||!url)return;
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  S.links.unshift({id:Date.now(),name,url,desc:document.getElementById('lDesc').value.trim(),tag:document.getElementById('lTag').value,date:new Date().toLocaleDateString()});
+  document.getElementById('lName').value='';document.getElementById('lUrl').value='';document.getElementById('lDesc').value='';
+  save();renderLinks();
+}
+function delLink(id){S.links=S.links.filter(function(l){return l.id!==id;});save();renderLinks();}
+function setLinkFilter(f){linkFilter=f;renderLinks();}
+function renderLinks(){
+  var el=document.getElementById('linkList');
+  var fEl=document.getElementById('linkFilters');
+  // Filters
+  var tags=['all'].concat([...new Set(S.links.map(function(l){return l.tag;}))]);
+  fEl.innerHTML=tags.map(function(t){
+    return '<button class="btn sml'+(linkFilter===t?' pri':' gho')+'" onclick="setLinkFilter(\''+t+'\')">'+(t==='all'?'All':TAG_LABEL[t]||t)+'</button>';
+  }).join('');
+  var filtered=linkFilter==='all'?S.links:S.links.filter(function(l){return l.tag===linkFilter;});
+  if(!filtered.length){el.innerHTML='<div class="empty">No links saved yet.</div>';return;}
+  el.innerHTML=filtered.map(function(l){
+    return '<div class="lcard">'
+      +'<div class="licon">🔗</div>'
+      +'<div class="linfo">'
+      +'<div class="lname">'+esc(l.name)+'</div>'
+      +(l.desc?'<div class="ldesc">'+esc(l.desc)+'</div>':'')
+      +'<a class="lurl" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.url)+'</a>'
+      +'<span class="ltag '+(TAG_CSS[l.tag]||'ltag-other')+'">'+( TAG_LABEL[l.tag]||l.tag)+'</span>'
+      +'</div>'
+      +'<button class="btn dan sml" onclick="delLink('+l.id+')" style="flex-shrink:0">✕</button>'
+      +'</div>';
   }).join('');
 }
 
@@ -553,7 +575,7 @@ async function genMenu(){
   if(!S.apiKey){alert('Add Gemini API key in Settings.');return;}
   var btn=event.currentTarget;btn.textContent='⏳…';btn.disabled=true;
   try{
-    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:'Suggest a healthy varied weekly lunch menu Mon–Sun.'+(S.customPrompt?' Prefs: '+S.customPrompt:'')+' Reply ONLY with JSON: {"Monday":"meal",...}'}]}],generationConfig:{maxOutputTokens:300,temperature:0.9}})});
+    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+S.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:'Suggest a healthy varied weekly lunch menu Mon–Sun.'+(S.customPrompt?' Prefs: '+S.customPrompt:'')+' Reply ONLY with JSON: {"Monday":"meal",...}'}]}],generationConfig:{maxOutputTokens:300,temperature:0.9}})});
     var data=await res.json();
     Object.assign(S.menu,JSON.parse((data.candidates[0].content.parts[0].text||'{}').replace(/```json|```/g,'').trim()));
     save();renderMenu();
@@ -567,8 +589,8 @@ function addFile(){var n=document.getElementById('fName').value.trim();if(!n)ret
 function delFile(id){S.files=S.files.filter(function(f){return f.id!==id;});save();renderFiles();}
 function renderFiles(){var el=document.getElementById('fileList');if(!S.files.length){el.innerHTML='<div class="empty">No files tracked yet.</div>';return;}el.innerHTML=S.files.map(function(f){return'<div class="fcard"><div class="fi">'+f.icon+'</div><div style="flex:1"><div class="fn">'+esc(f.name)+'</div>'+(f.note?'<div class="fm">'+esc(f.note)+'</div>':'')+'<div class="fm">Added '+f.date+'</div></div><button class="btn dan sml" onclick="delFile('+f.id+')">✕</button></div>';}).join('');}
 
-function renderAll(){renderTasks();renderMenu();renderFiles();renderPinned();renderDocSel();}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderAll(){renderTasks();renderLinks();renderMenu();renderFiles();renderPinned();renderDocSel();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 </body>
 </html>
